@@ -10,9 +10,8 @@ import {
 import dummyData from './dummyData'; // Yerel veriyi import et
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const PostList = () => {
+const PostList = ({navigation}) => {
   const [posts, setPosts] = useState([]);
-
   // Axios kullanmak yerine yerel veriyi doğrudan alıyoruz
   const fetchData = async () => {
     try {
@@ -32,7 +31,11 @@ const PostList = () => {
       {/* Üst kısım: Kullanıcı adı ve profil resmi */}
       <View style={styles.header}>
         <Image source={{uri: item.profileImage}} style={styles.profileImage} />
-        <Text style={styles.username}>{item.username}</Text>
+        <Text
+          style={styles.username}
+          onPress={() => navigation.navigate('ProfileDetail')}>
+          {item.username}
+        </Text>
         <View style={styles.icon}>
           <Ionicons name="ellipsis-vertical-outline" size={24} color="black" />
         </View>

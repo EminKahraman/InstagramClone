@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -8,15 +8,15 @@ import {
   Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {logout} from '../redux/authSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import auth from '@react-native-firebase/auth';
+import {setUser} from '../redux/authSlice';
 
 const ProfileHeader = ({navigation}) => {
+  const {user} = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
-  const {username} = useSelector(state => state.auth);
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
     Alert.alert('Çıkış Yap', 'Çıkış yapmak istediğinizden emin misiniz?', [
       {
         text: 'İptal',
@@ -24,10 +24,9 @@ const ProfileHeader = ({navigation}) => {
       },
       {
         text: 'Çıkış Yap',
-        onPress: () => {
-          dispatch(logout());
-
-          navigation.navigate('Login');
+        onPress: async () => {
+          await auth().signOut();
+          dispatch(setUser(null));
         },
       },
     ]);
@@ -43,7 +42,7 @@ const ProfileHeader = ({navigation}) => {
             style={{marginRight: 10}}
           />
         </TouchableOpacity>
-        <Text style={styles.username}>{username}</Text>
+        <Text style={styles.username}>{user?.username}</Text>
 
         <Ionicons
           name="add-circle-outline"
@@ -51,7 +50,12 @@ const ProfileHeader = ({navigation}) => {
           color="black"
           style={{marginLeft: 'auto', marginRight: 10}}
         />
-        <Ionicons name="menu-outline" size={24} color="black" />
+        <Ionicons
+          name="menu-outline"
+          size={24}
+          color="black"
+          onPress={() => navigation.navigate('Settings')}
+        />
       </View>
     </SafeAreaView>
   );
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 20,
   },
 });
 

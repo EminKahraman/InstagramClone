@@ -10,6 +10,9 @@ const dummyData = {
       comments: 120,
       description: 'Beautiful sunset at the beach!',
       bio: 'I love the beach and sunset!',
+      post: 0,
+      followers: 51,
+      following: 100,
     },
     {
       id: 2,

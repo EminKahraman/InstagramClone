@@ -1,111 +1,277 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
-  TextInput,
-  Button,
+  Image,
   StyleSheet,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
-import {login} from '../redux/authSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  setUsername,
+  setProfileImageUrl,
+  setUser,
+  setEmail,
+  setFirstName,
+} from '../redux/authSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+import {TextInput} from 'react-native-gesture-handler';
 import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email('Geçersiz e-posta').required('E-posta gerekli'),
+  password: Yup.string().required('Şifre gerekli'),
+});
 
 const LoginScreen = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const {user} = useSelector(state => state.auth);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleLogin = () => {
-    database()
-      .ref('users')
-      .orderByChild('username')
-      .equalTo(username)
-      .once('value')
-      .then(snapshot => {
-        if (snapshot.exists()) {
-          const userData = Object.values(snapshot.val())[0];
-          if (userData.password === password) {
-            // Gerçek uygulamada şifre karşılaştırması farklı yapılmalı
-            navigation.navigate('Home');
-          } else {
-            Alert.alert('Hata', 'Yanlış şifre.');
-          }
-        } else {
-          Alert.alert('Hata', 'Kullanıcı bulunamadı.');
-        }
-      })
-      .catch(error => {
-        Alert.alert('Hata', error.message);
-      });
+  const [initializing, setInitializing] = useState(true);
 
-    const profileImageUrl = `https://picsum.photos/200?random=${Math.floor(
-      Math.random() * 1000,
-    )}`;
-    dispatch(login({username, profileImageUrl}));
+  // Kullanıcı durumunu dinleyen fonksiyon
+  async function onAuthStateChanged(user) {
+    const uid = user?.uid;
+    console.log('user', user);
 
-    setUsername('');
-    setPassword('');
+    const userSnapshot = await database().ref(`users/${uid}`).once('value');
+
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.val();
+      dispatch(setUser(userData));
+      const profileImageUrl = `https://picsum.photos/200?random=${Math.floor(
+        Math.random() * 1000,
+      )}`;
+      dispatch(setProfileImageUrl(profileImageUrl));
+      console.log('userData', userData);
+    } else {
+      console.log('Kullanıcı verileri bulunamadı');
+    }
+
+    setUser(user);
+    if (initializing) setInitializing(false);
+    if (user) navigation.navigate('Tab');
+  }
+  console.log(initializing);
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // Unsubscribe on unmount
+  }, []);
+
+  if (initializing) {
+    return (
+      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
+  const handleLogin = async (values, {resetForm}) => {
+    setLoading(true);
+    try {
+      const response = await auth().signInWithEmailAndPassword(
+        values.email,
+        values.password,
+      );
+
+      const uid = response.user.uid;
+
+      const userSnapshot = await database().ref(`users/${uid}`).once('value');
+
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.val();
+        console.log('data', userData);
+        dispatch(setUser(userData));
+      } else {
+        console.log('Kullanıcı verileri bulunamadı');
+      }
+
+      const profileImageUrl = `https://picsum.photos/200?random=${Math.floor(
+        Math.random() * 1000,
+      )}`;
+      dispatch(setProfileImageUrl(profileImageUrl));
+      navigation.navigate('Tab');
+    } catch (error) {
+      console.log('error', error);
+      let errorMessage = 'Bir hata oluştu.';
+      switch (error.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'Kullanıcı bulunamadı.';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Yanlış şifre.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Geçersiz e-posta adresi.';
+          break;
+        case 'auth/invalid-credential':
+          errorMessage =
+            'Geçersiz kimlik bilgileri. Lütfen e-posta adresinizi ve şifrenizi kontrol edin.';
+          break;
+        default:
+          errorMessage = error.message;
+      }
+      Alert.alert('Hata', errorMessage);
+    } finally {
+      setLoading(false);
+      resetForm();
+    }
   };
+  if (!user) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Formik
+          initialValues={{email: '', password: ''}}
+          validationSchema={LoginSchema}
+          onSubmit={handleLogin}>
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
+            <>
+              <View style={styles.body}>
+                <Image
+                  source={{
+                    uri: 'https://cdn-icons-png.flaticon.com/512/5968/5968776.png',
+                  }}
+                  style={styles.instagramİcon}
+                />
 
-  return (
-    <View style={styles.container}>
-      <View style={{justifyContent: 'center', flex: 1}}>
-        <Text style={styles.title}>Instagram Clone</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Kullanıcı Adı"
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-        />
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Şifre"
-            value={password}
-            onChangeText={setPassword}
-            autoCapitalize="none"
-            secureTextEntry={!showPassword} // Şifre görünürlüğü için kontrol
-          />
-          <TouchableOpacity
-            style={styles.eyeIcon}
-            onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons
-              name={showPassword ? 'eye-outline' : 'eye-off-outline'}
-              size={24}
-            />
-          </TouchableOpacity>
-        </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="E-posta adresinizi giriniz..."
+                  placeholderTextColor="#6b6b6b"
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  value={values.email}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+                {errors.email && touched.email && (
+                  <Text style={styles.errorText}>{errors.email}</Text>
+                )}
 
-        <Button title="Giriş Yap" onPress={handleLogin} />
-      </View>
-      <View style={{marginBottom: 20}}>
-        <TouchableOpacity
-          style={styles.registerButton}
-          onPress={() => navigation.navigate('RegisterScreen')}>
-          <Text style={styles.registerButtonText}>Yeni Hesap Oluştur</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Şifrenizi giriniz..."
+                    placeholderTextColor="#7f7f7f"
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    value={values.password}
+                    autoCapitalize="none"
+                    secureTextEntry={!showPassword}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowPassword(!showPassword)}>
+                    <Ionicons
+                      name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+                      size={24}
+                    />
+                  </TouchableOpacity>
+                </View>
+                {errors.password && touched.password && (
+                  <Text style={styles.errorText}>{errors.password}</Text>
+                )}
+
+                <TouchableOpacity
+                  style={styles.loginButton}
+                  onPress={handleSubmit}
+                  disabled={loading}>
+                  {loading ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text style={{color: 'white', fontWeight: 'bold'}}>
+                      Giriş yap
+                    </Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.passwordResetButton}
+                  onPress={() => navigation.navigate('PasswordReset')}>
+                  <Text>Şifreni mi unuttun?</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.footer}>
+                <TouchableOpacity
+                  style={styles.registerButton}
+                  onPress={() => navigation.navigate('RegisterScreen')}>
+                  <Text style={{color: '#094be5', fontWeight: 'bold'}}>
+                    Yeni hesap oluştur
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+        </Formik>
+      </SafeAreaView>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+  },
+  loginButton: {
+    alignItems: 'center',
+    padding: 10,
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 20,
+    backgroundColor: '#094be5',
+    borderColor: 'white',
+  },
+  passwordResetButton: {
+    padding: 10,
+    alignItems: 'center',
+  },
+  registerButton: {
+    alignItems: 'center',
+    borderWidth: 1,
+    padding: 10,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    borderColor: '#094be5',
+  },
+  instagramİcon: {
+    alignSelf: 'center',
+    marginBottom: 100,
+    width: 75,
+    height: 75,
+  },
+  body: {
+    marginTop: 130,
+    gap: 10,
+  },
+  footer: {
+    justifyContent: 'flex-end',
+    flex: 1,
   },
   passwordContainer: {
     justifyContent: 'center',
   },
   eyeIcon: {
     position: 'absolute',
-    marginLeft: 320,
+    marginLeft: 330,
   },
   title: {
     fontSize: 32,
@@ -116,17 +282,15 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 5,
+    padding: 15,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: '#FAFAFA',
   },
-  registerButton: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  registerButtonText: {
-    color: 'blue',
-    fontSize: 16,
+  errorText: {
+    color: 'red',
+    marginHorizontal: 20,
+    fontSize: 12,
   },
 });
 

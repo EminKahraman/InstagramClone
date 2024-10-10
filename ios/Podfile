@@ -5,7 +5,7 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+platform :ios, '13.0'  # veya daha yüksek bir sürüm
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -14,12 +14,15 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+use_modular_headers!
+
 target 'InstagramClone' do
   config = use_native_modules!
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
+    :hermes_enabled => true,
+    :fabric_enabled => true,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
