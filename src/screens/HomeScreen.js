@@ -1,26 +1,25 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useSelector} from 'react-redux';
+
+import HomePageScreen from './HomePageScreen';
+import DiscoverScreen from './DiscoverScreen';
+import ShareScreen from './ShareScreen';
+import ReelsScreen from './ReelsScreen';
+import ProfileScreen from './ProfilScreen';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import DiscoverScreen from '../screens/DiscoverScreen';
-import ShareScreen from '../screens/ShareScreen';
-import ReelsScreen from '../screens/ReelsScreen';
-import HomeStack from './HomeStack';
-import ProfileStack from './ProfileStack';
 
 const Tabs = createBottomTabNavigator();
 
-const TabStack = () => {
+const HomeScreen = () => {
+  const {username, profileImageUrl} = useSelector(state => state.auth);
+
   return (
-    <Tabs.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: 'black',
-      }}>
+    <Tabs.Navigator screenOptions={{headerShown: false}}>
       <Tabs.Screen
-        name="HomePageTab"
-        component={HomeStack}
+        name="HomePage"
+        component={HomePageScreen}
         options={{
           tabBarIcon: ({color, size}) => (
             <Ionicons name="home-outline" size={size} color={color} />
@@ -41,7 +40,7 @@ const TabStack = () => {
         component={ShareScreen}
         options={{
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="add-circle-outline" size={size} color={color} />
+            <Ionicons name="add-outline" size={size} color={color} />
           ),
         }}
       />
@@ -50,13 +49,14 @@ const TabStack = () => {
         component={ReelsScreen}
         options={{
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="film-outline" size={size} color={color} />
+            <Ionicons name="videocam-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="ProfileTab"
-        component={ProfileStack}
+        name="Profile"
+        component={ProfileScreen}
+        initialParams={{username, profileImageUrl}}
         options={{
           tabBarIcon: ({color, size}) => (
             <Ionicons name="person-circle-outline" size={size} color={color} />
@@ -67,4 +67,4 @@ const TabStack = () => {
   );
 };
 
-export default TabStack;
+export default HomeScreen;

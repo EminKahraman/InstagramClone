@@ -24,12 +24,19 @@ const MainStack = () => {
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{headerShown: true, headerBackTitle: ' '}}
+        options={{
+          headerShown: true,
+          headerBackTitle: ' ',
+          headerTitle: 'Ayarlar ve hareketler ',
+        }}
       />
       <Stack.Screen
         name="ProfileDetail"
         component={ProfileDetail}
-        options={{headerShown: true, headerBackTitle: ' '}}
+        options={{
+          headerShown: true,
+          headerBackTitle: ' ',
+        }}
       />
       <Stack.Screen
         name="Messages"
@@ -39,7 +46,10 @@ const MainStack = () => {
       <Stack.Screen
         name="Notifications"
         component={NotificationsScreen}
-        options={{headerShown: true, headerBackTitle: ' '}}
+        options={{
+          headerShown: true,
+          headerBackTitle: ' ',
+        }}
       />
     </Stack.Navigator>
   );

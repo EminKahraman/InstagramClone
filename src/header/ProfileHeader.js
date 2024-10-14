@@ -48,7 +48,7 @@ const ProfileHeader = ({navigation}) => {
           name="add-circle-outline"
           size={24}
           color="black"
-          style={{marginLeft: 'auto', marginRight: 10}}
+          style={{marginLeft: 'auto', marginRight: 20}}
         />
         <Ionicons
           name="menu-outline"
@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
   },
   username: {
-    fontWeight: 'bold',
+    fontWeight: '700',
     fontSize: 20,
   },
 });

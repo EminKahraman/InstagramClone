@@ -1,17 +1,17 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import ProfileDetail from '../screens/ProfileDetailScreen';
-import HomePageScreen from '../screens/HomePageScreen';
-import NotificationsScreen from '../screens/NotificationsScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createStackNavigator();
 
-const HomeStack = () => {
+const ProfileStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerStyle: {shadowOpacity: 0}}}>
       <Stack.Screen
-        name="HomePage"
-        component={HomePageScreen}
+        name="Profile"
+        component={ProfileScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -20,16 +20,16 @@ const HomeStack = () => {
         options={{headerBackTitle: ' '}}
       />
       <Stack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
+        name="Settings"
+        component={SettingsScreen}
         options={{
           headerShown: true,
           headerBackTitle: ' ',
-          animationEnabled: false,
+          headerTitle: 'Ayarlar ve hareketler ',
         }}
       />
     </Stack.Navigator>
   );
 };
 
-export default HomeStack;
+export default ProfileStack;

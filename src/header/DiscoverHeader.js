@@ -14,13 +14,8 @@ const DiscoverHeader = () => {
     <SafeAreaView>
       <View style={styles.header}>
         <View style={styles.searchInput}>
-          <Ionicons
-            name="search-outline"
-            size={20}
-            color="black"
-            style={styles.searchIcon}
-          />
-          <TextInput placeholder="Searh" placeholderTextColor="#666666" />
+          <Ionicons name="search-outline" size={22} style={styles.searchIcon} />
+          <TextInput placeholder="Ara" placeholderTextColor="#696969" />
         </View>
 
         <Ionicons
@@ -38,7 +33,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
   },
 
   searchIcon: {
@@ -52,12 +47,13 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 10,
     marginHorizontal: 5,
-    backgroundColor: '#cccccc',
+    backgroundColor: '#dddddd',
     marginRight: 15,
   },
 
   menuIcon: {
     marginLeft: 'auto',
+    marginRight: 5,
   },
 });
 

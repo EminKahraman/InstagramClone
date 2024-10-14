@@ -10,13 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  setUsername,
-  setProfileImageUrl,
-  setUser,
-  setEmail,
-  setFirstName,
-} from '../redux/authSlice';
+import {setProfileImageUrl, setUser} from '../redux/authSlice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
 import {Formik} from 'formik';
@@ -42,7 +36,6 @@ const LoginScreen = ({navigation}) => {
   // Kullanıcı durumunu dinleyen fonksiyon
   async function onAuthStateChanged(user) {
     const uid = user?.uid;
-    console.log('user', user);
 
     const userSnapshot = await database().ref(`users/${uid}`).once('value');
 
@@ -53,7 +46,6 @@ const LoginScreen = ({navigation}) => {
         Math.random() * 1000,
       )}`;
       dispatch(setProfileImageUrl(profileImageUrl));
-      console.log('userData', userData);
     } else {
       console.log('Kullanıcı verileri bulunamadı');
     }
@@ -62,7 +54,6 @@ const LoginScreen = ({navigation}) => {
     if (initializing) setInitializing(false);
     if (user) navigation.navigate('Tab');
   }
-  console.log(initializing);
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -91,7 +82,6 @@ const LoginScreen = ({navigation}) => {
 
       if (userSnapshot.exists()) {
         const userData = userSnapshot.val();
-        console.log('data', userData);
         dispatch(setUser(userData));
       } else {
         console.log('Kullanıcı verileri bulunamadı');
