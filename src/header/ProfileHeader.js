@@ -3,59 +3,50 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
-  TouchableOpacity,
   Text,
-  Alert,
+  TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useDispatch, useSelector} from 'react-redux';
-import auth from '@react-native-firebase/auth';
-import {setUser} from '../redux/authSlice';
 
-const ProfileHeader = ({navigation}) => {
-  const {user} = useSelector(state => state.auth);
-  const dispatch = useDispatch();
+const {height} = Dimensions.get('window');
 
-  const handleLogout = async () => {
-    Alert.alert('Çıkış Yap', 'Çıkış yapmak istediğinizden emin misiniz?', [
-      {
-        text: 'İptal',
-        style: 'cancel',
-      },
-      {
-        text: 'Çıkış Yap',
-        onPress: async () => {
-          await auth().signOut();
-          dispatch(setUser(null));
-        },
-      },
-    ]);
-  };
-
+const ProfileHeader = ({
+  navigation,
+  username,
+  isMe,
+  onLeftPress,
+  onRightOnePress,
+  onRightTwoPress,
+}) => {
   return (
     <SafeAreaView>
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleLogout}>
+        <TouchableOpacity onPress={onLeftPress}>
           <Ionicons
-            name="log-out-outline"
+            name={isMe ? 'log-out-outline' : 'arrow-back-outline'}
             size={24}
             style={{marginRight: 10}}
           />
         </TouchableOpacity>
-        <Text style={styles.username}>{user?.username}</Text>
 
-        <Ionicons
-          name="add-circle-outline"
-          size={24}
-          color="black"
-          style={{marginLeft: 'auto', marginRight: 20}}
-        />
-        <Ionicons
-          name="menu-outline"
-          size={24}
-          color="black"
-          onPress={() => navigation.navigate('Settings')}
-        />
+        <Text style={styles.username}>{username}</Text>
+        <TouchableOpacity
+          onPress={isMe ? onRightOnePress : null}
+          style={{marginLeft: 'auto', marginRight: 20}}>
+          <Ionicons
+            name={isMe ? 'add-circle-outline' : 'paper-plane-outline'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={isMe ? onRightTwoPress : null}>
+          <Ionicons
+            name={isMe ? 'menu-outline' : 'ellipsis-vertical-outline'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -64,12 +55,29 @@ const ProfileHeader = ({navigation}) => {
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginHorizontal: 10,
   },
   username: {
     fontWeight: '700',
     fontSize: 20,
+  },
+  bottomSheet: {
+    backgroundColor: 'white',
+    padding: 16,
+    height: 450,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 

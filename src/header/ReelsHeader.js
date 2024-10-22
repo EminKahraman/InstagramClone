@@ -4,10 +4,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ReelsHeader = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: 'black'}}>
       <View style={styles.header}>
-        <Text style={{fontSize: 24, fontWeight: 'bold'}}>Reels</Text>
-        <Ionicons name="camera-outline" size={24} color="black" />
+        <Text style={{fontSize: 24, fontWeight: 'bold', color: 'white'}}>
+          Reels
+        </Text>
+
+        <Ionicons name="camera-outline" size={24} color="white" />
       </View>
     </SafeAreaView>
   );
@@ -16,8 +19,7 @@ const ReelsHeader = () => {
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
     justifyContent: 'space-between',
   },
 });

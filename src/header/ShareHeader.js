@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, SafeAreaView, Button} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ShareHeader = () => {
+const ShareHeader = ({navigation}) => {
   return (
     <SafeAreaView>
       <View style={styles.header}>

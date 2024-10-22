@@ -1,14 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import ShareHeader from '../header/ShareHeader';
+import HomeStorage from '../firebaseStorage/screens/HomeStorage';
 
 const ShareScreen = () => {
   return (
     <View style={styles.container}>
       <ShareHeader />
-      <View style={styles.text}>
-        <Text>Share Sayfası</Text>
-      </View>
+      <HomeStorage />
     </View>
   );
 };

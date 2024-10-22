@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,12 +11,18 @@ import ProfileStack from './ProfileStack';
 const Tabs = createBottomTabNavigator();
 
 const TabStack = () => {
+  const [isReelsActive, setIsReelsActive] = useState(false);
+
   return (
     <Tabs.Navigator
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: 'black',
+        tabBarActiveTintColor: isReelsActive ? 'white' : 'black',
+        tabBarInactiveTintColor: isReelsActive ? 'white' : 'gray',
+        tabBarStyle: {
+          backgroundColor: isReelsActive ? 'black' : 'white',
+        },
       }}>
       <Tabs.Screen
         name="HomePageTab"
@@ -25,6 +31,10 @@ const TabStack = () => {
           tabBarIcon: ({color, size}) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: () => setIsReelsActive(false),
+          tabLongPress: () => setIsReelsActive(false),
         }}
       />
       <Tabs.Screen
@@ -35,6 +45,10 @@ const TabStack = () => {
             <Ionicons name="search-outline" size={size} color={color} />
           ),
         }}
+        listeners={{
+          tabPress: () => setIsReelsActive(false),
+          tabLongPress: () => setIsReelsActive(false),
+        }}
       />
       <Tabs.Screen
         name="Share"
@@ -43,6 +57,10 @@ const TabStack = () => {
           tabBarIcon: ({color, size}) => (
             <Ionicons name="add-circle-outline" size={size} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: () => setIsReelsActive(false),
+          tabLongPress: () => setIsReelsActive(false),
         }}
       />
       <Tabs.Screen
@@ -53,6 +71,10 @@ const TabStack = () => {
             <Ionicons name="film-outline" size={size} color={color} />
           ),
         }}
+        listeners={{
+          tabPress: () => setIsReelsActive(true),
+          tabLongPress: () => setIsReelsActive(true),
+        }}
       />
       <Tabs.Screen
         name="ProfileTab"
@@ -61,6 +83,10 @@ const TabStack = () => {
           tabBarIcon: ({color, size}) => (
             <Ionicons name="person-circle-outline" size={size} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: () => setIsReelsActive(false),
+          tabLongPress: () => setIsReelsActive(false),
         }}
       />
     </Tabs.Navigator>

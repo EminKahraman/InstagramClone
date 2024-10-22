@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const Tabs = createBottomTabNavigator();
 
 const HomeScreen = () => {
+  // Redux'tan kullanıcı bilgilerini al
   const {username, profileImageUrl} = useSelector(state => state.auth);
 
   return (
@@ -22,7 +23,7 @@ const HomeScreen = () => {
         component={HomePageScreen}
         options={{
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Ionicons name="home-outline" size={25} color="gray" />
           ),
         }}
       />
@@ -31,7 +32,7 @@ const HomeScreen = () => {
         component={DiscoverScreen}
         options={{
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="search-outline" size={size} color={color} />
+            <Ionicons name="search-outline" size={25} color="gray" />
           ),
         }}
       />
@@ -40,7 +41,7 @@ const HomeScreen = () => {
         component={ShareScreen}
         options={{
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="add-outline" size={size} color={color} />
+            <Ionicons name="add-outline" size={25} color="gray" />
           ),
         }}
       />
@@ -49,7 +50,7 @@ const HomeScreen = () => {
         component={ReelsScreen}
         options={{
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="videocam-outline" size={size} color={color} />
+            <Ionicons name="videocam-outline" size={25} color="gray" />
           ),
         }}
       />
@@ -59,7 +60,7 @@ const HomeScreen = () => {
         initialParams={{username, profileImageUrl}}
         options={{
           tabBarIcon: ({color, size}) => (
-            <Ionicons name="person-circle-outline" size={size} color={color} />
+            <Ionicons name="person-circle-outline" size={25} color="gray" />
           ),
         }}
       />

@@ -17,7 +17,6 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {TextInput} from 'react-native-gesture-handler';
 import database from '@react-native-firebase/database';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Geçersiz e-posta').required('E-posta gerekli'),
@@ -122,7 +121,7 @@ const LoginScreen = ({navigation}) => {
     return (
       <SafeAreaView style={styles.container}>
         <Formik
-          initialValues={{email: '', password: ''}}
+          initialValues={{email: 'emin@gmail.com', password: '111111'}}
           validationSchema={LoginSchema}
           onSubmit={handleLogin}>
           {({
@@ -220,6 +219,7 @@ const LoginScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   loginButton: {
     alignItems: 'center',

@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 10,
+    marginBottom: 10,
   },
 
   searchIcon: {

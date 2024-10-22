@@ -17,6 +17,9 @@ end
 use_modular_headers!
 
 target 'InstagramClone' do
+
+  pod 'gRPC-C++'
+  
   config = use_native_modules!
 
   use_react_native!(

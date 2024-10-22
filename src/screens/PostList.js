@@ -5,13 +5,15 @@ import {
   Image,
   StyleSheet,
   FlatList,
-  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import dummyData from './dummyData'; // Yerel veriyi import et
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Stories from './Stories';
 
-const PostList = ({navigation}) => {
+const PostList = ({navigation, openBottomSheet}) => { // openBottomSheet propunu ekledik
   const [posts, setPosts] = useState([]);
+  const [isLiked, setIsLiked] = useState(false);
   // Axios kullanmak yerine yerel veriyi doğrudan alıyoruz
   const fetchData = async () => {
     try {
@@ -33,11 +35,19 @@ const PostList = ({navigation}) => {
         <Image source={{uri: item.profileImage}} style={styles.profileImage} />
         <Text
           style={styles.username}
-          onPress={() => navigation.navigate('ProfileDetail')}>
+          onPress={() =>
+            navigation.navigate('ProfileDetail', {isMe: false, item})
+          }>
           {item.username}
         </Text>
         <View style={styles.icon}>
-          <Ionicons name="ellipsis-vertical-outline" size={24} color="black" />
+          <TouchableOpacity onPress={openBottomSheet}>
+            <Ionicons
+              name="ellipsis-vertical-outline"
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -45,21 +55,24 @@ const PostList = ({navigation}) => {
       <Image source={{uri: item.postImage}} style={styles.postImage} />
 
       <View style={styles.footer}>
-        <Ionicons
-          name="heart-outline"
-          size={24}
-          color="black"
-          style={{marginRight: 10}}
-        />
-        <Ionicons name="chatbubble-outline" size={24} color="black" />
+        <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
+          <Ionicons
+            name="heart-outline"
+            size={24}
+            color={isLiked ? 'red' : 'black'}
+            style={{marginRight: 10}}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons name="chatbubble-outline" size={24} color="black" />
+        </TouchableOpacity>
         <Text style={styles.comments}>{item.comments}</Text>
-        <Ionicons name="paper-plane-outline" size={24} color="black" />
-        <Ionicons
-          name="bookmark-outline"
-          size={24}
-          color="black"
-          style={styles.icon}
-        />
+        <TouchableOpacity>
+          <Ionicons name="paper-plane-outline" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.icon}>
+          <Ionicons name="bookmark-outline" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
       {/* Açıklama */}
@@ -81,6 +94,8 @@ const PostList = ({navigation}) => {
       data={posts}
       renderItem={renderItem}
       keyExtractor={item => item.id.toString()}
+      showsVerticalScrollIndicator={false} // Scroll göstergesini kap
+      ListHeaderComponent={<Stories />}
     />
   );
 };

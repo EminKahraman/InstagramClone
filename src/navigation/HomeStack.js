@@ -1,8 +1,8 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import ProfileDetail from '../screens/ProfileDetailScreen';
 import HomePageScreen from '../screens/HomePageScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
+import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,8 +16,8 @@ const HomeStack = () => {
       />
       <Stack.Screen
         name="ProfileDetail"
-        component={ProfileDetail}
-        options={{headerBackTitle: ' '}}
+        component={ProfileScreen}
+        options={{headerBackTitle: ' ', headerShown: false}}
       />
       <Stack.Screen
         name="Notifications"

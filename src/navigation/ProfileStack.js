@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import ProfileDetail from '../screens/ProfileDetailScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createStackNavigator();
@@ -12,6 +12,7 @@ const ProfileStack = () => {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
+        initialParams={{isMe: true}}
         options={{headerShown: false}}
       />
       <Stack.Screen
