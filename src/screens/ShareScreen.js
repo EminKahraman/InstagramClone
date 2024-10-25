@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import ShareHeader from '../header/ShareHeader';
-import HomeStorage from '../firebaseStorage/screens/HomeStorage';
+import HomeStorage from '../firebaseStorage/screens/Home';
 
 const ShareScreen = () => {
   return (

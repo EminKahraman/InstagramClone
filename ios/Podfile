@@ -5,8 +5,10 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, '13.0'  # veya daha yüksek bir sürüm
+
+platform :ios, '13.0'  
 prepare_react_native_project!
+
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -14,25 +16,30 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-use_modular_headers!
 
 target 'InstagramClone' do
-
-  pod 'gRPC-C++'
-  
   config = use_native_modules!
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
 
+
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+
+  
   use_react_native!(
     :path => config[:reactNativePath],
-    :hermes_enabled => true,
-    :fabric_enabled => true,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+
 
   target 'InstagramCloneTests' do
     inherit! :complete
     # Pods for testing
   end
+  
 
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202

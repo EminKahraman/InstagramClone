@@ -1,5 +1,5 @@
 import database from '@react-native-firebase/database';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   TextInput,
@@ -11,14 +11,14 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   setFirstName,
   setCity,
   setGender,
   setUsername,
 } from '../redux/authSlice';
-import {Formik} from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import auth from '@react-native-firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -36,12 +36,12 @@ const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Geçersiz e-posta').required('E-posta gerekli'),
 });
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleRegister = (values, {setSubmitting}) => {
+  const handleRegister = (values, { setSubmitting }) => {
     setLoading(true);
     auth()
       .createUserWithEmailAndPassword(values.email, values.password)
@@ -102,7 +102,7 @@ const RegisterScreen = ({navigation}) => {
           errors,
           touched,
         }) => (
-          <View style={{gap: 10, marginTop: 10}}>
+          <View style={{ gap: 10, marginTop: 10 }}>
             <TextInput
               style={styles.input}
               placeholder="Kullanıcı adınızı giriniz..."
@@ -198,8 +198,8 @@ const RegisterScreen = ({navigation}) => {
               {loading ? (
                 <ActivityIndicator color="white" />
               ) : (
-                <Text style={{color: 'white', fontWeight: 'bold'}}>
-                  Giriş yap
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                  Yeni hesap oluştur
                 </Text>
               )}
             </TouchableOpacity>
@@ -236,6 +236,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     alignItems: 'center',
+    justifyContent: "center",
     padding: 10,
     marginHorizontal: 20,
     marginTop: 10,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import PasswordResetScreen from '../screens/PasswordResetScreen';
@@ -12,17 +12,23 @@ const AuthStack = () => {
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="RegisterScreen"
         component={RegisterScreen}
-        options={{headerBackTitle: ' '}}
+        options={{
+          headerBackTitle: ' ',
+          headerTitle: 'Yeni hesap oluştur',
+        }}
       />
       <Stack.Screen
         name="PasswordReset"
         component={PasswordResetScreen}
-        options={{headerBackTitle: ' '}}
+        options={{
+          headerBackTitle: ' ',
+          headerTitle: 'Şifreni mi unuttun?',
+        }}
       />
     </Stack.Navigator>
   );

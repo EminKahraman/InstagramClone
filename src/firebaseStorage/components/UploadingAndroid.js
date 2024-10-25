@@ -1,56 +1,43 @@
-import {
-  Image,
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
-import {BlurView} from '@react-native-community/blur';
-import ProgressBar from './ProgressBar';
-import {Video} from 'react-native-video';
+import { Image, Text, StyleSheet, View, TouchableOpacity, Platform } from "react-native";
+import Video from "react-native-video";
+import ProgressBar from "./ProgressBar";
 
-export function UploadingAndroid({image, video, progress}) {
+export function UploadingAndroid({ image, video, progress }) {
   // The component has the same logic. However, the blur effect works differently on Android.
   return (
     <View
       style={[
         StyleSheet.absoluteFill,
         {
-          alignItems: 'center',
-          justifyContent: 'center',
+          alignItems: "center",
+          justifyContent: "center",
           zIndex: 1,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background for Android
         },
-      ]}>
-      {Platform.OS === 'ios' && (
-        // VibrancyView is only supported on iOS
-        //https://github.com/Kureev/react-native-blur#vibrancyview
-        <VibrancyView
-          blurType="ultraThinMaterialDark"
-          style={StyleSheet.absoluteFill}></VibrancyView>
-      )}
-
-      <BlurView
+      ]}
+    >
+      <View
         style={{
-          width: '70%',
-          // Some styles could  work oncorrectly on Android.
+          width: "70%",
+          backgroundColor: '#FFFFFF',
+          borderRadius: 14,
+          overflow: 'hidden',
         }}
-        blurType="dark">
+      >
         <View
           style={{
-            alignItems: 'center',
+            alignItems: "center",
             paddingVertical: 10,
             rowGap: 12,
-            borderRadius: 14,
-            backgroundColor: '#FFFFFF',
-          }}>
+          }}
+        >
           {image && (
             <Image
-              source={{uri: image}}
+              source={{ uri: image }}
               style={{
                 width: 100,
                 height: 100,
-                resizeMode: 'contain',
+                resizeMode: "contain",
                 borderRadius: 6,
               }}
             />
@@ -60,34 +47,30 @@ export function UploadingAndroid({image, video, progress}) {
               source={{
                 uri: video,
               }}
-              videoStyle={{}}
+              style={{ width: 200, height: 200 }}
               rate={1.0}
               volume={1.0}
               isMuted={false}
               resizeMode="contain"
-              // shouldPlay
-              // isLooping
-              style={{width: 200, height: 200}}
-              // useNativeControls
             />
           )}
-          <Text style={{fontSize: 12}}>Uploading...</Text>
+          <Text style={{ fontSize: 12 }}>Uploading...</Text>
           <ProgressBar progress={progress} />
           <View
             style={{
               height: 1,
               borderWidth: StyleSheet.hairlineWidth,
-              width: '100%',
-              borderColor: '#00000020',
+              width: "100%",
+              borderColor: "#00000020",
             }}
           />
           <TouchableOpacity>
-            <Text style={{fontWeight: '500', color: '#3478F6', fontSize: 17}}>
+            <Text style={{ fontWeight: "500", color: "#3478F6", fontSize: 17 }}>
               Cancel
             </Text>
           </TouchableOpacity>
         </View>
-      </BlurView>
+      </View>
     </View>
   );
 }
