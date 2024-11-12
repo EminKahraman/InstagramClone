@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import {
   SafeAreaView,
   TextInput,
-  Button,
   Alert,
   StyleSheet,
   Text,

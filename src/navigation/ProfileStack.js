@@ -3,22 +3,22 @@ import {createStackNavigator} from '@react-navigation/stack';
 import ProfileDetail from '../screens/ProfileDetailScreen';
 import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import PostDetail from '../screens/PostDetail';
 
 const Stack = createStackNavigator();
 
 const ProfileStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerStyle: {shadowOpacity: 0}}}>
+    <Stack.Navigator screenOptions={{headerStyle: {shadowOpacity: 0},headerShown: false}}>
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
         initialParams={{isMe: true}}
-        options={{headerShown: false}}
       />
       <Stack.Screen
         name="ProfileDetail"
         component={ProfileDetail}
-        options={{headerBackTitle: ' '}}
+        options={{headerShown: true}}
       />
       <Stack.Screen
         name="Settings"
@@ -28,6 +28,11 @@ const ProfileStack = () => {
           headerBackTitle: ' ',
           headerTitle: 'Ayarlar ve hareketler ',
         }}
+      />
+      <Stack.Screen
+        name="PostDetail"
+        component={PostDetail}
+        options={{animationEnabled: false,}}
       />
     </Stack.Navigator>
   );

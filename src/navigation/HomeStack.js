@@ -8,17 +8,9 @@ const Stack = createStackNavigator();
 
 const HomeStack = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="HomePage"
-        component={HomePageScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ProfileDetail"
-        component={ProfileScreen}
-        options={{headerBackTitle: ' ', headerShown: false}}
-      />
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="HomePage" component={HomePageScreen} />
+      <Stack.Screen name="ProfileDetail" component={ProfileScreen} />
       <Stack.Screen
         name="Notifications"
         component={NotificationsScreen}

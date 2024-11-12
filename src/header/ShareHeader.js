@@ -1,14 +1,17 @@
 import React from 'react';
-import {View, Text, StyleSheet, SafeAreaView, Button} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView,TouchableOpacity,Image, ActivityIndicator } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ShareHeader = ({navigation}) => {
+const ShareHeader = ({ navigation, onSharePress, loading }) => {
+
   return (
     <SafeAreaView>
       <View style={styles.header}>
-        <Ionicons name="close-outline" size={24} color="black" />
-        <Text style={styles.headerText}>Yeni Gönderi</Text>
-        <Button style={styles.headerButton} title="İleri" onPress={() => {}} />
+        <Ionicons name="close-outline" size={35} color="black"  />
+        <Text style={styles.headerTitle}>Yeni Gönderi</Text>
+        <TouchableOpacity style={{ marginLeft: 'auto' }} onPress={onSharePress} >
+          {loading ? <ActivityIndicator size="small" color="#094be5" style={{marginRight: 10}} /> : <Text style={styles.headerShare} >Paylaş</Text>}
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -18,16 +21,19 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
+    marginBottom: 5
   },
-  headerText: {
-    fontSize: 24,
+  headerTitle: {
+    fontSize: 21,
     fontWeight: 'bold',
     marginLeft: 30,
     flex: 1,
   },
-  headerButton: {
-    marginLeft: 'auto',
+  headerShare: {
+    color: "#094be5",
+    fontSize: 18,
+    fontWeight: "600"
   },
 });
 

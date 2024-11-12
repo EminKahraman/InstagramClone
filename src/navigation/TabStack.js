@@ -19,7 +19,6 @@ const TabStack = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: isReelsActive ? 'white' : 'black',
-        tabBarInactiveTintColor: isReelsActive ? 'white' : 'gray',
         tabBarStyle: {
           backgroundColor: isReelsActive ? 'black' : 'white',
         },

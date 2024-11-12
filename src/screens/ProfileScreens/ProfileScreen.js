@@ -6,51 +6,44 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Pressable,
 } from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {useSelector, useDispatch} from 'react-redux';
-import {setUser} from '../../redux/authSlice';
-
+import {useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import auth from '@react-native-firebase/auth';
 
 import ProfileHeader from '../../header/ProfileHeader';
 import ScreenOne from './tabScreens/ScreenOne';
 import ScreenTwo from './tabScreens/ScreenTwo';
 import ScreenThree from './tabScreens/ScreenThree';
 import CreateBottomSheet from '../../components/BottomSheets/Create';
+import ProfileImageBottomSheet from '../../components/BottomSheets/ProfileImage';
+import ProfileDetailBottomSheet from '../../components/BottomSheets/ProfileDetail';
 
 const Tab = createMaterialTopTabNavigator();
 
 const ProfileScreen = ({navigation, route}) => {
-  const {user, profileImageUrl} = useSelector(state => state.auth);
+  const {user} = useSelector(state => state.auth);
   const {isMe} = route.params || {isMe: false};
   const {item} = route.params || {item: null};
   const [isFollowed, setIsFollowed] = useState(true);
-  const dispatch = useDispatch();
-
-  const handleLogout = async () => {
-    Alert.alert('Çıkış Yap', 'Çıkış yapmak istediğinizden emin misiniz?', [
-      {
-        text: 'İptal',
-        style: 'cancel',
-      },
-      {
-        text: 'Çıkış Yap',
-        onPress: async () => {
-          await auth().signOut();
-          dispatch(setUser(null));
-        },
-      },
-    ]);
-  };
 
   const goBack = () => navigation.goBack();
   const goSettings = () => navigation.navigate('Settings');
 
-  const defaultBottomSheetReference = React.useRef(null);
-  const handleOpenPress = () => {
-    defaultBottomSheetReference.current?.present();
+  const createBottomSheetReference = React.useRef(null);
+  const handleCreatePress = () => {
+    createBottomSheetReference.current?.present();
+  };
+
+  const profileImageBottomSheetReference = React.useRef(null);
+  const handleProfileImagePress = () => {
+    profileImageBottomSheetReference.current?.present();
+  };
+
+  const profileDetailBottomSheetReference = React.useRef(null);
+  const handleProfileDetailPress = () => {
+    profileDetailBottomSheetReference.current?.present();
   };
 
   return (
@@ -59,36 +52,64 @@ const ProfileScreen = ({navigation, route}) => {
         navigation={navigation}
         username={isMe ? user?.username : item?.username}
         isMe={isMe}
-        onLeftPress={isMe ? handleLogout : goBack}
-        onRightTwoPress={goSettings}
-        onRightOnePress={handleOpenPress}
+        onLeftPress={isMe ? null : goBack}
+        onRightTwoPress={isMe ? goSettings : handleProfileDetailPress}
+        onRightOnePress={handleCreatePress}
       />
       <View style={{flex: 1}}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row', marginTop: 20}}>
           <View>
-            <Image
-              source={{uri: profileImageUrl}}
-              style={styles.profileImage}
-            />
-            <Text style={styles.firstName}>
-              {isMe ? user?.firstName : item?.fullName}
-            </Text>
+            {isMe && (
+              <Pressable onPress={handleProfileImagePress}>
+                {user?.avatar ? (
+                  <Image
+                    source={{uri: user?.avatar}}
+                    style={styles.profileImage}
+                  />
+                ) : (
+                  <Ionicons
+                    name="person-circle-outline"
+                    size={80}
+                    style={{alignSelf: 'center'}}
+                  />
+                )}
+              </Pressable>
+            )}
+
+            {!isMe && (
+              <Image
+                source={{uri: item?.profileImage}}
+                style={styles.profileImage}
+              />
+            )}
           </View>
           <View style={styles.numbers}>
             <View style={{alignItems: 'center'}}>
-              <Text style={styles.post}>0</Text>
+              <Text style={styles.post}>
+                {isMe ? user?.posts?.length : item?.profile?.post}
+              </Text>
               <Text style={styles.postTitle}>gönderi</Text>
             </View>
-            <View style={{alignItems: 'center', marginHorizontal: 35}}>
-              <Text style={styles.followers}>47</Text>
+            <View style={{alignItems: 'center', marginHorizontal: 40}}>
+              <Text style={styles.followers}>
+                {isMe ? 1 : item?.profile?.followers}
+              </Text>
               <Text style={styles.followersTitle}>takipçi</Text>
             </View>
             <View style={{alignItems: 'center'}}>
-              <Text style={styles.following}>258</Text>
+              <Text style={styles.following}>
+                {isMe ? 1 : item?.profile?.following}
+              </Text>
               <Text style={styles.followingTtile}>takip</Text>
             </View>
           </View>
         </View>
+
+        <Text style={styles.firstName}>
+          {isMe ? user?.firstName : item?.fullName}
+        </Text>
+
+        <Text style={styles.bio}>{isMe ? user?.bio : item.profile?.bio}</Text>
 
         {isMe && (
           <View
@@ -142,11 +163,11 @@ const ProfileScreen = ({navigation, route}) => {
               tabBarIcon: ({color}) => {
                 let iconName;
 
-                if (route.name === 'Apps') {
+                if (route.name === 'Posts') {
                   iconName = 'apps-sharp';
-                } else if (route.name === 'Film') {
+                } else if (route.name === 'Reels') {
                   iconName = 'film-outline';
-                } else if (route.name === 'People') {
+                } else if (route.name === 'Tag') {
                   iconName = 'people-circle-outline';
                 }
 
@@ -159,18 +180,18 @@ const ProfileScreen = ({navigation, route}) => {
               },
             })}>
             <Tab.Screen
-              name="Apps"
+              name="Posts"
               component={ScreenOne}
               initialParams={{isMe: isMe}}
             />
             <Tab.Screen
-              name="Film"
+              name="Reels"
               component={ScreenTwo}
               initialParams={{isMe: isMe}}
             />
 
             <Tab.Screen
-              name="People"
+              name="Tag"
               component={ScreenThree}
               initialParams={{isMe: isMe}}
             />
@@ -178,7 +199,9 @@ const ProfileScreen = ({navigation, route}) => {
         </View>
       </View>
 
-      <CreateBottomSheet ref={defaultBottomSheetReference} />
+      <CreateBottomSheet ref={createBottomSheetReference} />
+      <ProfileImageBottomSheet ref={profileImageBottomSheetReference} />
+      <ProfileDetailBottomSheet ref={profileDetailBottomSheetReference} />
     </View>
   );
 };
@@ -189,11 +212,10 @@ const styles = StyleSheet.create({
   film: {flex: 1, alignItems: 'center'},
   people: {flex: 1, alignItems: 'center', paddingBottom: 10},
   numbers: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    flex: 1,
   },
   editButton: {
     flex: 1,
@@ -231,11 +253,11 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 7,
   },
+
   profileImage: {
     width: 90,
     height: 90,
-    borderRadius: 60,
-    marginTop: 20,
+    borderRadius: 45,
     marginLeft: 20,
   },
 
@@ -245,13 +267,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginLeft: 10,
   },
-  post: {fontSize: 20, fontWeight: 'bold'},
+  bio: {
+    marginLeft: 10,
+  },
+
+  post: {fontSize: 19, fontWeight: 'bold'},
   postTitle: {fontSize: 15, marginTop: 2},
 
-  followers: {fontSize: 20, fontWeight: 'bold'},
+  followers: {fontSize: 19, fontWeight: 'bold'},
   followersTitle: {fontSize: 15, marginTop: 2},
 
-  following: {fontSize: 20, fontWeight: 'bold'},
+  following: {fontSize: 19, fontWeight: 'bold'},
   followingTtile: {fontSize: 15, marginTop: 2},
   contentContainer: {
     flex: 1,

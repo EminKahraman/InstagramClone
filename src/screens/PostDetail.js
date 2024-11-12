@@ -1,38 +1,32 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
+  Image,
+  SafeAreaView,
+  FlatList,
 } from 'react-native';
-import dummyData from './dummyData'; // Yerel veriyi import et
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Stories from './Stories';
 import {useSelector} from 'react-redux';
+import MyPostBottomSheet from '../components/BottomSheets//MyPost';
+import PostsHeader from '../header/PostsHeader';
 import CommentBottomSheet from '../components/BottomSheets/Comment';
 import ShareBottomSheet from '../components/BottomSheets/Share';
-const PostList = ({navigation, openBottomSheet}) => {
-  // openBottomSheet propunu ekledik
-  const {user, profileImageUrl} = useSelector(state => state.auth);
+
+const PostDetail = ({navigation, route}) => {
+  const {item} = route.params;
   const [posts, setPosts] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // Axios kullanmak yerine yerel veriyi doğrudan alıyoruz
-  const fetchData = async () => {
-    try {
-      // Yerel veriyi set ediyoruz
-      setPosts(dummyData.posts);
-    } catch (error) {
-      console.error('Veri çekme hatası:', error);
-    }
-  };
+  const {user} = useSelector(state => state.auth);
 
-  useEffect(() => {
-    fetchData(); // Bileşen yüklendiğinde veri çek
-  }, []);
+  const defaultBottomSheetReference = React.useRef(null);
+  const handleMyPostBottomSheet = () => {
+    defaultBottomSheetReference.current?.present();
+  };
 
   const commentBottomSheetReference = React.useRef(null);
   const handleCommentPress = () => {
@@ -44,24 +38,23 @@ const PostList = ({navigation, openBottomSheet}) => {
     shareBottomSheetReference.current?.present();
   };
 
-  const renderItem = ({item}) => (
-    <View style={styles.postContainer}>
+  return (
+    <SafeAreaView style={styles.postContainer}>
+      <PostsHeader navigation={navigation} />
+
       <View style={styles.header}>
-        <Image source={{uri: item?.profileImage}} style={styles.profileImage} />
-        <Text
-          style={styles.username}
-          onPress={() => navigation.navigate('ProfileDetail', {item})}>
-          {item.username}
-        </Text>
+        <Image source={{uri: user.avatar}} style={styles.profileImage} />
+        <Text style={styles.username}>{user.username}</Text>
         <TouchableOpacity
-          style={{marginLeft: 'auto'}}
-          onPress={openBottomSheet}>
+          onPress={handleMyPostBottomSheet}
+          style={{marginLeft: 'auto'}}>
           <Ionicons name="ellipsis-vertical-outline" size={24} />
         </TouchableOpacity>
       </View>
 
-      {/* Post görseli */}
-      <Image source={{uri: item.postImage}} style={styles.postImage} />
+      <View>
+        <Image source={{uri: item?.url}} style={styles.postImage} />
+      </View>
 
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
@@ -75,7 +68,7 @@ const PostList = ({navigation, openBottomSheet}) => {
           style={{flexDirection: 'row', alignItems: 'center', marginLeft: 10}}
           onPress={handleCommentPress}>
           <Ionicons name="chatbubble-outline" size={24} />
-          <Text style={styles.comments}>{item.comments}</Text>
+          <Text style={styles.comments}>51</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSharePress}>
           <Ionicons name="paper-plane-outline" size={25} />
@@ -90,45 +83,35 @@ const PostList = ({navigation, openBottomSheet}) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity>
-        <Text style={{fontWeight: '600', marginLeft: 10, marginBottom: 5}}>
-          Beğenmeleri gör
+      <View style={{marginHorizontal: 10}}>
+        <TouchableOpacity>
+          <Text style={{fontWeight: 'bold', marginBottom: 5}}>
+            Beğenmeleri gör
+          </Text>
+        </TouchableOpacity>
+        <Text>
+          <Text style={styles.username}>{user.username}</Text> {item?.text}
         </Text>
-      </TouchableOpacity>
+      </View>
 
-      {/* Açıklama */}
-      <Text style={styles.description}>
-        <Text style={styles.username}>{item.username}</Text> {item.description}
-      </Text>
-
-      {/* Yorumlar */}
-      {/*{item.comments.map((comment, index) => (
-        <Text key={index} style={styles.comment}>
-        <Text style={styles.username}>{comment.user}</Text> {comment.comment}
-        </Text>
-        ))}*/}
+      <MyPostBottomSheet ref={defaultBottomSheetReference} />
       <CommentBottomSheet ref={commentBottomSheetReference} />
       <ShareBottomSheet ref={shareBottomSheetReference} />
-    </View>
-  );
-
-  return (
-    <FlatList
-      data={posts}
-      renderItem={renderItem}
-      keyExtractor={item => item.id.toString()}
-      showsVerticalScrollIndicator={false} // Scroll göstergesini kap
-      ListHeaderComponent={<Stories />}
-    />
+    </SafeAreaView>
   );
 };
 
+export default PostDetail;
+
 const styles = StyleSheet.create({
+  saveIcon: {
+    marginLeft: 'auto',
+  },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    marginHorizontal: 10,
+    marginVertical: 7,
   },
   postContainer: {
     marginBottom: 10,
@@ -157,13 +140,4 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 2,
   },
-  description: {
-    marginHorizontal: 10,
-  },
-  comment: {
-    marginHorizontal: 10,
-    marginTop: 5,
-  },
 });
-
-export default PostList;

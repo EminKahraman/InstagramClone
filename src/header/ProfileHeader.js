@@ -5,11 +5,9 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
+  Pressable,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-const {height} = Dimensions.get('window');
 
 const ProfileHeader = ({
   navigation,
@@ -22,29 +20,30 @@ const ProfileHeader = ({
   return (
     <SafeAreaView>
       <View style={styles.header}>
-        <TouchableOpacity onPress={onLeftPress}>
+        <Pressable onPress={onLeftPress}>
           <Ionicons
-            name={isMe ? 'log-out-outline' : 'arrow-back-outline'}
+            name={isMe ? 'lock-closed-outline' : 'arrow-back-outline'}
             size={24}
-            style={{marginRight: 10}}
+            style={{marginRight: isMe ? 5 : 30}}
           />
-        </TouchableOpacity>
+        </Pressable>
 
         <Text style={styles.username}>{username}</Text>
         <TouchableOpacity
           onPress={isMe ? onRightOnePress : null}
-          style={{marginLeft: 'auto', marginRight: 20}}>
+          style={{marginLeft: 'auto', marginRight: 25}}>
           <Ionicons
             name={isMe ? 'add-circle-outline' : 'paper-plane-outline'}
             size={24}
             color="black"
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={isMe ? onRightTwoPress : null}>
+        <TouchableOpacity onPress={onRightTwoPress}>
           <Ionicons
             name={isMe ? 'menu-outline' : 'ellipsis-vertical-outline'}
             size={24}
             color="black"
+            style={{marginRight: 5}}
           />
         </TouchableOpacity>
       </View>

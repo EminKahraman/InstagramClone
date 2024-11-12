@@ -1,17 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import AuthStack from './AuthStack';
 import TabStack from './TabStack';
-import SettingsScreen from '../screens/SettingsScreen';
-import ProfileDetail from '../screens/ProfileDetailScreen';
 import MessagesScreen from '../screens/MessagesScreen';
-import NotificationsScreen from '../screens/NotificationsScreen';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {setSelectedImage} from '../redux/authSlice';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {TouchableOpacity} from 'react-native';
 
 const Stack = createStackNavigator();
 
 const MainStack = () => {
   const {user} = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    AsyncStorage.getItem('selectedImages').then(value => {
+      console.log(value);
+      dispatch(setSelectedImage(JSON.parse(value)));
+    });
+  }, []);
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -22,34 +30,24 @@ const MainStack = () => {
       )}
 
       <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          headerShown: true,
-          headerBackTitle: ' ',
-          headerTitle: 'Ayarlar ve hareketler ',
-        }}
-      />
-      <Stack.Screen
-        name="ProfileDetail"
-        component={ProfileDetail}
-        options={{
-          headerShown: true,
-          headerBackTitle: ' ',
-        }}
-      />
-      <Stack.Screen
         name="Messages"
         component={MessagesScreen}
-        options={{headerShown: true, headerBackTitle: ' '}}
-      />
-      <Stack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
-        options={{
+        options={({navigation}) => ({
           headerShown: true,
-          headerBackTitle: ' ',
-        }}
+          headerTitle: `${user?.username}`,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{paddingLeft: 10}}>
+              <Ionicons name="arrow-back-outline" size={24} />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity style={{paddingRight: 10}}>
+              <Ionicons name="create-outline" size={24} />
+            </TouchableOpacity>
+          ),
+        })}
       />
     </Stack.Navigator>
   );

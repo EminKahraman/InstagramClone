@@ -29,7 +29,7 @@ const ReelsScreen = () => {
   const fetchData = async () => {
     try {
       // Yerel veriyi set ediyoruz
-      setReels(dummyData.reels);
+      setReels(dummyData.posts);
     } catch (error) {
       console.error('Veri çekme hatası:', error);
     }
@@ -62,7 +62,7 @@ const ReelsScreen = () => {
         <Pressable onPress={() => setIsVideoPaused(!isVideoPaused)}>
           <Video
             source={{
-              uri: item.video,
+              uri: item.reels.video,
             }}
             style={{
               height: videoHeight,
@@ -158,7 +158,7 @@ const ReelsScreen = () => {
             <View style={{marginLeft: 'auto', alignItems: 'center'}}>
               <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
                 <Ionicons
-                  name="heart-outline"
+                  name={isLiked ? 'heart' : 'heart-outline'}
                   size={25}
                   style={isLiked ? {color: 'red'} : styles.icon}
                 />
@@ -170,13 +170,15 @@ const ReelsScreen = () => {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity style={{alignItems: 'center'}}>
                 <Ionicons
                   name="chatbubble-outline"
                   size={25}
                   style={styles.icon}
                 />
-                <Text style={{color: 'white', marginTop: 3}}>222</Text>
+                <Text style={{color: 'white', marginTop: 3}}>
+                  {item.reels.comments}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity>
@@ -222,6 +224,7 @@ const ReelsScreen = () => {
           left: 0,
           justifyContent: 'space-between',
           zIndex: 1,
+          marginHorizontal: 15,
         }}>
         <Text style={{fontSize: 24, fontWeight: 'bold', color: 'white'}}>
           Reels

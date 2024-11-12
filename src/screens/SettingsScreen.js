@@ -7,10 +7,32 @@ import {
   View,
   TextInput,
   ScrollView,
+  Alert,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import auth from '@react-native-firebase/auth';
+import {setUser} from '../redux/authSlice';
 
 const SettingsScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    Alert.alert('Çıkış Yap', 'Çıkış yapmak istediğinizden emin misiniz?', [
+      {
+        text: 'İptal',
+        style: 'cancel',
+      },
+      {
+        text: 'Çıkış Yap',
+        onPress: async () => {
+          await auth().signOut();
+          dispatch(setUser(null));
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView bounces={false}>
@@ -342,6 +364,33 @@ const SettingsScreen = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: 'white',
+            marginBottom: 6,
+            paddingHorizontal: 10,
+            paddingVertical: 15,
+          }}>
+          <Text style={{color: '#363636'}}>Giriş yap</Text>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 15,
+            }}>
+            <Text style={{fontSize: 16, color: 'blue'}}>Hesap ekle</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+            onPress={handleLogout}>
+            <Text style={{fontSize: 16, color: 'red'}}>Çıkış yap</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
