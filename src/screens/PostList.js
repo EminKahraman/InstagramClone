@@ -7,15 +7,13 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import dummyData from './dummyData'; // Yerel veriyi import et
+import dummyData from './dummyData';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Stories from './Stories';
-import {useSelector} from 'react-redux';
 import CommentBottomSheet from '../components/BottomSheets/Comment';
 import ShareBottomSheet from '../components/BottomSheets/Share';
+import Stories from './Stories';
+
 const PostList = ({navigation, openBottomSheet}) => {
-  // openBottomSheet propunu ekledik
-  const {user, profileImageUrl} = useSelector(state => state.auth);
   const [posts, setPosts] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -24,7 +22,7 @@ const PostList = ({navigation, openBottomSheet}) => {
   const fetchData = async () => {
     try {
       // Yerel veriyi set ediyoruz
-      setPosts(dummyData.posts);
+      setPosts(dummyData.users);
     } catch (error) {
       console.error('Veri çekme hatası:', error);
     }
@@ -56,12 +54,11 @@ const PostList = ({navigation, openBottomSheet}) => {
         <TouchableOpacity
           style={{marginLeft: 'auto'}}
           onPress={openBottomSheet}>
-          <Ionicons name="ellipsis-vertical-outline" size={24} />
+          <Ionicons name="ellipsis-vertical" size={20} />
         </TouchableOpacity>
       </View>
 
-      {/* Post görseli */}
-      <Image source={{uri: item.postImage}} style={styles.postImage} />
+      <Image source={{uri: item.posts.postImage}} style={styles.postImage} />
 
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
@@ -75,7 +72,7 @@ const PostList = ({navigation, openBottomSheet}) => {
           style={{flexDirection: 'row', alignItems: 'center', marginLeft: 10}}
           onPress={handleCommentPress}>
           <Ionicons name="chatbubble-outline" size={24} />
-          <Text style={styles.comments}>{item.comments}</Text>
+          <Text style={styles.comments}>{item.posts.comments}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSharePress}>
           <Ionicons name="paper-plane-outline" size={25} />
@@ -91,15 +88,19 @@ const PostList = ({navigation, openBottomSheet}) => {
       </View>
 
       <TouchableOpacity>
-        <Text style={{fontWeight: '600', marginLeft: 10, marginBottom: 5}}>
-          Beğenmeleri gör
-        </Text>
+        <Text style={{fontWeight: '500', marginLeft: 10}}>Beğenmeleri gör</Text>
       </TouchableOpacity>
 
-      {/* Açıklama */}
-      <Text style={styles.description}>
-        <Text style={styles.username}>{item.username}</Text> {item.description}
-      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginHorizontal: 10,
+        }}>
+        <Text style={styles.username}>{item.username}</Text>
+        <Text style={styles.description}>{item.posts.description}</Text>
+      </View>
+      <Text style={styles.postTime}>{item.posts.time}</Text>
 
       {/* Yorumlar */}
       {/*{item.comments.map((comment, index) => (
@@ -118,7 +119,6 @@ const PostList = ({navigation, openBottomSheet}) => {
       renderItem={renderItem}
       keyExtractor={item => item.id.toString()}
       showsVerticalScrollIndicator={false} // Scroll göstergesini kap
-      ListHeaderComponent={<Stories />}
     />
   );
 };
@@ -127,29 +127,34 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
+    height: 40,
     paddingHorizontal: 10,
-    paddingVertical: 7,
   },
   postContainer: {
-    marginBottom: 10,
+    marginBottom: 15,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    width: '100%',
+    height: 40,
+    paddingHorizontal: 10,
+    marginVertical: 5,
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     marginRight: 10,
   },
   username: {
-    fontWeight: 'bold',
+    fontSize: 13,
+    fontWeight: '600',
   },
   postImage: {
     width: '100%',
-    height: 400,
+    height: 370,
     resizeMode: 'cover',
   },
   comments: {
@@ -158,7 +163,14 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   description: {
+    marginLeft: 5,
+    marginVertical: 5,
+    color: '#363636',
+  },
+  postTime: {
     marginHorizontal: 10,
+    fontSize: 12,
+    color: '#696969',
   },
   comment: {
     marginHorizontal: 10,

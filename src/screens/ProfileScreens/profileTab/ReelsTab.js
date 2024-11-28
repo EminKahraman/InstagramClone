@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ScreenTwo = ({route}) => {
+const ReelsTab = ({route}) => {
   const {isMe} = route.params || {isMe: false};
 
   return (
@@ -32,7 +32,7 @@ const ScreenTwo = ({route}) => {
   );
 };
 
-export default ScreenTwo;
+export default ReelsTab;
 
 const styles = StyleSheet.create({
   container: {flex: 1},

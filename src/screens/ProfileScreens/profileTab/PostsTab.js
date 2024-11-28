@@ -7,16 +7,17 @@ import {
   Image,
   FlatList,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 
 const numColumns = 3;
 const imageSize = Dimensions.get('window').width / numColumns; // Her bir resim için boyut
 
-const ScreenOne = ({navigation, route}) => {
+const PostsTab = ({navigation, route}) => {
   const {isMe} = route.params || {isMe: false};
   const [randomImages, setRandomImages] = useState([]);
-  const {user, selectedImages} = useSelector(state => state.auth);
+  const {user} = useSelector(state => state.auth);
 
   useEffect(() => {
     const generateRandomImages = () => {
@@ -29,12 +30,12 @@ const ScreenOne = ({navigation, route}) => {
     generateRandomImages();
   }, []);
 
-  const renderItem = ({item}) => (
+  const renderMyPost = ({item}) => (
     <View style={styles.imageRow}>
-      <TouchableOpacity
+      <Pressable
         onPress={isMe ? () => navigation.navigate('PostDetail', {item}) : null}>
         <Image source={{uri: item?.url ?? item}} style={styles.image} />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 
@@ -47,7 +48,7 @@ const ScreenOne = ({navigation, route}) => {
               data={[...(user?.posts || [])].sort(
                 (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
               )}
-              renderItem={renderItem}
+              renderItem={renderMyPost}
               numColumns={numColumns}
             />
           </View>
@@ -74,7 +75,7 @@ const ScreenOne = ({navigation, route}) => {
         <View style={{flex: 1, backgroundColor: 'white'}}>
           <FlatList
             data={randomImages}
-            renderItem={renderItem}
+            renderItem={renderMyPost}
             numColumns={numColumns}
           />
         </View>
@@ -98,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ScreenOne;
+export default PostsTab;

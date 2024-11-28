@@ -29,7 +29,7 @@ const ReelsScreen = () => {
   const fetchData = async () => {
     try {
       // Yerel veriyi set ediyoruz
-      setReels(dummyData.posts);
+      setReels(dummyData.users);
     } catch (error) {
       console.error('Veri çekme hatası:', error);
     }
@@ -127,7 +127,7 @@ const ReelsScreen = () => {
               </View>
 
               <View style={{marginVertical: 10}}>
-                <Text style={{color: 'white'}}>{item?.description}</Text>
+                <Text style={{color: 'white'}}>{item.reels.description}</Text>
               </View>
 
               <View
@@ -213,24 +213,7 @@ const ReelsScreen = () => {
 
   return (
     <View style={{flex: 1}}>
-      <View
-        style={{
-          flex: 1,
-          position: 'absolute',
-          top: 40,
-          flexDirection: 'row',
-          alignItems: 'center',
-          right: 0,
-          left: 0,
-          justifyContent: 'space-between',
-          zIndex: 1,
-          marginHorizontal: 15,
-        }}>
-        <Text style={{fontSize: 24, fontWeight: 'bold', color: 'white'}}>
-          Reels
-        </Text>
-        <Ionicons name="camera-outline" size={24} color="white" />
-      </View>
+      <ReelsHeader />
 
       <FlatList
         data={reels}

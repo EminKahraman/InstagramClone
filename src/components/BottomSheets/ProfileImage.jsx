@@ -69,6 +69,7 @@ const ProfileImageBottomSheet = forwardRef((props, ref) => {
       },
       error => {
         // handle error
+        console.log("error",error)
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then(async downloadURL => {

@@ -4,12 +4,14 @@ import ProfileDetail from '../screens/ProfileDetailScreen';
 import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PostDetail from '../screens/PostDetail';
+import FollowDetail from '../screens/ProfileScreens/FollowDetail';
 
 const Stack = createStackNavigator();
 
 const ProfileStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerStyle: {shadowOpacity: 0},headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{headerStyle: {shadowOpacity: 0}, headerShown: false}}>
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
@@ -32,8 +34,9 @@ const ProfileStack = () => {
       <Stack.Screen
         name="PostDetail"
         component={PostDetail}
-        options={{animationEnabled: false,}}
+        options={{animationEnabled: false}}
       />
+      <Stack.Screen name="FollowDetail" component={FollowDetail} />
     </Stack.Navigator>
   );
 };

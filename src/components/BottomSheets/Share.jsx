@@ -12,7 +12,6 @@ import {
 import React, {forwardRef, useState, useEffect} from 'react';
 import {BottomSheet} from '../BottomSheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useSelector} from 'react-redux';
 import dummyData from '../../screens/dummyData';
 
 const numColumns = 3;
@@ -22,7 +21,7 @@ const ShareBottomSheet = forwardRef((props, ref) => {
 
   const fetchData = async () => {
     try {
-      setPosts(dummyData.posts);
+      setPosts(dummyData.users);
     } catch (error) {
       console.error('Veri çekme hatası:', error);
     }
@@ -85,7 +84,7 @@ const ShareBottomSheet = forwardRef((props, ref) => {
             borderTopColor: '#f2f2f2',
           }}>
           <ScrollView
-            horizontal={true}
+            horizontal
             showsHorizontalScrollIndicator={false}
             style={{
               flexDirection: 'row',

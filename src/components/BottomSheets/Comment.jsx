@@ -65,10 +65,10 @@ const CommentBottomSheet = forwardRef((props, ref) => {
               alignItems: 'center',
               marginTop: 10,
             }}>
-            <Image source={{uri: user.avatar}} style={styles.profileImage} />
+            <Image source={{uri: user?.avatar}} style={styles.profileImage} />
 
             <TextInput
-              placeholder={`${user.username} olarak yorum yap...`}
+              placeholder={`${user?.username} olarak yorum yap...`}
               placeholderTextColor={'#4f4f4f'}
               style={{marginLeft: 20, flex: 1}}
               value={text}

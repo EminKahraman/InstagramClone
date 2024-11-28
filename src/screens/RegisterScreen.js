@@ -61,7 +61,7 @@ const RegisterScreen = ({ navigation }) => {
         dispatch(setFirstName(values.firstName));
         dispatch(setCity(values.city));
         dispatch(setGender(values.gender));
-        navigation.navigate('Login');
+        navigation.navigate('LoginScreen');
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {

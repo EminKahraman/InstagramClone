@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const ScreenThree = ({route}) => {
+const TagsTab = ({route}) => {
   const {isMe} = route.params || {isMe: false};
 
   return (
@@ -34,7 +34,7 @@ const ScreenThree = ({route}) => {
   );
 };
 
-export default ScreenThree;
+export default TagsTab;
 
 const styles = StyleSheet.create({
   container: {flex: 1},

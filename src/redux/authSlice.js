@@ -9,6 +9,7 @@ const initialState = {
   gender: '',
   email: '',
   selectedImages:[],
+  bio:'',
 
   user: null,
 };
@@ -44,7 +45,9 @@ const authSlice = createSlice({
     setSelectedImage: (state, action) => {
       state.selectedImages = action.payload;
     },
-  
+    setBio: (state, action) => {
+      state.bio = action.payload;
+    },
   },
 });
 
@@ -57,6 +60,7 @@ export const {
   setGender,
   setEmail,
   setSelectedImage,
+  setBio,
   setUser,
 } = authSlice.actions;
 export default authSlice.reducer;
