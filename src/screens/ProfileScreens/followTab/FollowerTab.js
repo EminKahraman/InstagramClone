@@ -12,7 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import dummyData from '../../dummyData';
 
 const FollowerTab = () => {
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <View
         style={{
@@ -21,33 +21,33 @@ const FollowerTab = () => {
           marginHorizontal: 15,
           marginBottom: 15,
         }}>
-        <Image source={{uri: item?.profileImage}} style={styles.profileImage} />
-        <View style={{marginLeft: 20}}>
-          <Text style={{fontWeight: '500'}}>{item.username}</Text>
-          <Text style={{color: '#696969'}}>{item.fullName}</Text>
+        <Image source={{ uri: item?.profileImage }} style={styles.profileImage} />
+        <View style={{ marginLeft: 20 }}>
+          <Text style={{ fontWeight: '500' }}>{item.username}</Text>
+          <Text style={{ color: '#696969' }}>{item.fullName}</Text>
         </View>
         <TouchableOpacity style={styles.button}>
-          <Text style={{color: 'white', fontWeight: 500}}>Takip Et</Text>
+          <Text style={{ color: 'white', fontWeight: 500 }}>Takip Et</Text>
         </TouchableOpacity>
-        <Ionicons name="close-outline" size={15} style={{marginLeft: 10}} />
+        <Ionicons name="close-outline" size={15} style={{ marginLeft: 10 }} />
       </View>
     );
   };
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: 'center' }}>
         <View style={styles.icon}>
           <Ionicons
             name="person-add-outline"
-            size={50}
+            size={55}
             onPress={() => navigation.goBack()}
           />
         </View>
-        <Text style={{fontSize: 20, fontWeight: 'bold', marginVertical: 10}}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10 }}>
           Takipçiler
         </Text>
-        <Text style={{color: '#696969', marginBottom: 100}}>
+        <Text style={{ color: '#696969', marginBottom: 100 }}>
           Seni takip eden herkesi burada görüceksin.
         </Text>
       </View>

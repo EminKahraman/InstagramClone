@@ -1,225 +1,99 @@
-import {useState, useEffect, useRef} from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
-  StyleSheet,
-  TextInput,
   KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
-  TouchableOpacity,
-  Image,
-  Text,
-  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
-import MessageDetailHeader from '../header/MessageDetailHeader';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  setMessages,
+  setParticipants,
+  setEditedMessage,
+  updateMessages,
+  setLoading
+} from '../redux/messagesSlice';
+import MessageList from './MessageScreens/MessageList';
+import InputBar from './MessageScreens/InputBar';
+import MessageDetailHeader from '../header/MessageDetailHeader';
 
-const MessageDetail = ({navigation, route}) => {
-  const {item} = route.params || {item: null};
-  const [editedMessage, setEditedMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+const MessageDetail = ({ navigation, route }) => {
+  const { item } = route.params || { item: null };
+  const dispatch = useDispatch();
+  const { messages, participants, editedMessage, loading } = useSelector(state => state.message);
 
-  const yourRef = useRef(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      yourRef.current?.scrollToEnd();
-    }, 100);
-  }, [messages]);
+    const fetchMessagesAndParticipants = async () => {
+      setLoading(true)
+      try {
+        const messagesResponse = await axios.get(
+          'https://dummy-chat-server.tribechat.pro/api/messages/latest',
+        );
+        dispatch(setMessages(messagesResponse.data));
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      const storedMessages = await AsyncStorage.getItem('messages');
-      if (storedMessages) {
-        setMessages(JSON.parse(storedMessages));
+        const participantsResponse = await axios.get(
+          'http://dummy-chat-server.tribechat.pro/api/participants/all',
+        );
+        dispatch(setParticipants(participantsResponse.data));
+      } catch (error) {
+        if (error.response) {
+          // Sunucudan dönen yanıt hatası
+          console.error('Response error:', error.response.data);
+        } else if (error.request) {
+          // Sunucuya istek gitti fakat cevap alınamadı
+          console.error('Request error:', error.request);
+        } else {
+          // İstek yapılmadan önce oluşan hata
+          console.error('Error:', error.message);
+        }
+      } finally {
+        setLoading(false); // Yükleme durumunu kaldırma
       }
     };
-    fetchMessages();
+
+    fetchMessagesAndParticipants();
   }, []);
 
-  const sendMessage = async () => {
-    if (editedMessage) {
-      const newMessage = {
-        id: messages.length + 1,
-        message: editedMessage,
-        time: new Date().toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      };
-      const newMessages = [...messages, newMessage];
-      setMessages(newMessages);
-      await AsyncStorage.setItem('messages', JSON.stringify(newMessages));
-      setEditedMessage('');
 
-      // Send message to the server
-      try {
-        const response = await axios.post(
-          'http://dummy-chat-server.tribechat.pro/api/messages/new',
-          {
-            message: editedMessage,
-          },
-        );
-        console.log('Message sent successfully:', response.data);
-      } catch (error) {
-        console.error('Error sending message:', error);
-      }
+
+
+  const sendMessage = async () => {
+    if (editedMessage.trim() === '') return;
+
+    try {
+      const response = await axios.post(
+        'http://dummy-chat-server.tribechat.pro/api/messages/new',
+        {
+          text: editedMessage,
+        },
+      );
+
+      dispatch(updateMessages(response.data))
+
+      dispatch(setEditedMessage(''));
+    } catch (error) {
+      console.error('Error sending message:', error);
     }
   };
 
-  return (
-    <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={{flex: 1}}>
-        <MessageDetailHeader navigation={navigation} item={item} />
-        <ScrollView
-          style={{flex: 1}}
-          ref={yourRef}
-          showsVerticalScrollIndicator={false}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginTop: 10,
-              alignItems: 'flex-end',
-              marginHorizontal: 15,
-            }}>
-            <Image
-              source={{uri: item?.profileImage}}
-              style={styles.profileImage}
-            />
-            <View style={styles.message}>
-              <Text>{item?.messages.message}</Text>
-            </View>
-          </View>
-
-          <View
-            style={{
-              marginTop: 10,
-              alignItems: 'flex-end',
-              marginHorizontal: 15,
-            }}>
-            <View>
-              {messages.map((message, index) => (
-                <View key={index}>
-                  <View style={styles.myMessage}>
-                    <Text style={{color: 'white'}}>{message.message}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        </ScrollView>
-
-        <View style={styles.inputContainer}>
-          {editedMessage ? (
-            <TouchableOpacity
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 20,
-              }}>
-              <Ionicons
-                name={'search'}
-                size={22}
-                color={'#094be5'}
-                style={{padding: 6}}
-              />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#094be5',
-                borderRadius: 20,
-              }}>
-              <Ionicons
-                name={'camera'}
-                size={24}
-                color={'white'}
-                style={{padding: 6}}
-              />
-            </TouchableOpacity>
-          )}
-
-          <TextInput
-            placeholder="Mesaj..."
-            placeholderTextColor="#4f4f4f"
-            style={{marginLeft: 10, flex: 1}}
-            value={editedMessage}
-            onChangeText={setEditedMessage}
-            flexWrap="wrap"
-            multiline
-          />
-          {editedMessage ? (
-            <TouchableOpacity
-              style={{
-                marginLeft: 'auto',
-                backgroundColor: '#094be5',
-                borderRadius: 20,
-              }}
-              onPress={sendMessage}>
-              <Ionicons
-                name="paper-plane"
-                size={22}
-                color={'white'}
-                style={{
-                  paddingHorizontal: 14,
-                  paddingVertical: 5,
-                }}
-              />
-            </TouchableOpacity>
-          ) : (
-            <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
-              <TouchableOpacity>
-                <Ionicons name="mic-outline" size={26} />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Ionicons
-                  name="image-outline"
-                  size={26}
-                  style={{marginHorizontal: 10}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Ionicons name="happy-outline" size={26} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      </View>
-    </KeyboardAvoidingView>
+  return loading ? (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" />
+    </View>
+  ) : (
+    <SafeAreaView style={{ flex: 1 }}>
+      <MessageDetailHeader navigation={navigation} item={item} />
+      <MessageList />
+      <InputBar
+        editedMessage={editedMessage}
+        setEditedMessage={text => dispatch(setEditedMessage(text))}
+        onSendMessage={sendMessage}
+      />
+    </SafeAreaView>
   );
 };
 
 export default MessageDetail;
-
-const styles = StyleSheet.create({
-  inputContainer: {
-    padding: 5,
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderRadius: 20,
-    backgroundColor: '#dddddd',
-    marginHorizontal: 15,
-
-    marginBottom: 30,
-  },
-  profileImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-  },
-  message: {
-    backgroundColor: '#dddddd',
-    padding: 10,
-    borderRadius: 20,
-    marginLeft: 10,
-  },
-  myMessage: {
-    backgroundColor: '#094be5',
-    padding: 10,
-    borderRadius: 20,
-    alignSelf: 'flex-end',
-    marginBottom: 3,
-  },
-});

@@ -45,6 +45,7 @@ const HomePageScreen = ({navigation}) => {
       </Animated.View>
 
       <FlatList
+        showsVerticalScrollIndicator={false} 
         data={[]}
         keyExtractor={(_, index) => index.toString()}
         renderItem={() => null} // Liste boş, içerik header ve post bileşeninde

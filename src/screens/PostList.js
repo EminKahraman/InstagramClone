@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,25 +11,26 @@ import dummyData from './dummyData';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommentBottomSheet from '../components/BottomSheets/Comment';
 import ShareBottomSheet from '../components/BottomSheets/Share';
-import Stories from './Stories';
 
-const PostList = ({navigation, openBottomSheet}) => {
+const PostList = ({ navigation, openBottomSheet }) => {
   const [posts, setPosts] = useState([]);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // Axios kullanmak yerine yerel veriyi doğrudan alıyoruz
   const fetchData = async () => {
     try {
-      // Yerel veriyi set ediyoruz
-      setPosts(dummyData.users);
+      // Add bookmarked and liked property to each post
+      const updatedPosts = dummyData.users.map(post => ({
+        ...post,
+        bookmarked: false,
+        liked: false,
+      }));
+      setPosts(updatedPosts);
     } catch (error) {
       console.error('Veri çekme hatası:', error);
     }
   };
 
   useEffect(() => {
-    fetchData(); // Bileşen yüklendiğinde veri çek
+    fetchData();
   }, []);
 
   const commentBottomSheetReference = React.useRef(null);
@@ -42,34 +43,46 @@ const PostList = ({navigation, openBottomSheet}) => {
     shareBottomSheetReference.current?.present();
   };
 
-  const renderItem = ({item}) => (
+  const toggleBookmark = (postId) => {
+    setPosts(posts.map(post => 
+      post.id === postId ? { ...post, bookmarked: !post.bookmarked } : post
+    ));
+  };
+
+  const toggleLike = (postId) => {
+    setPosts(posts.map(post => 
+      post.id === postId ? { ...post, liked: !post.liked } : post
+    ));
+  };
+
+  const renderItem = ({ item }) => (
     <View style={styles.postContainer}>
       <View style={styles.header}>
-        <Image source={{uri: item?.profileImage}} style={styles.profileImage} />
+        <Image source={{ uri: item?.profileImage }} style={styles.profileImage} />
         <Text
           style={styles.username}
-          onPress={() => navigation.navigate('ProfileDetail', {item})}>
+          onPress={() => navigation.navigate('ProfileDetail', { item })}>
           {item.username}
         </Text>
         <TouchableOpacity
-          style={{marginLeft: 'auto'}}
+          style={{ marginLeft: 'auto' }}
           onPress={openBottomSheet}>
           <Ionicons name="ellipsis-vertical" size={20} />
         </TouchableOpacity>
       </View>
 
-      <Image source={{uri: item.posts.postImage}} style={styles.postImage} />
+      <Image source={{ uri: item.posts.postImage }} style={styles.postImage} />
 
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
+        <TouchableOpacity onPress={() => toggleLike(item.id)}>
           <Ionicons
-            name={isLiked ? 'heart' : 'heart-outline'}
+            name={item.liked ? 'heart' : 'heart-outline'}
             size={25}
-            style={isLiked ? {color: 'red'} : null}
+            style={item.liked ? { color: 'red' } : null}
           />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{flexDirection: 'row', alignItems: 'center', marginLeft: 10}}
+          style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}
           onPress={handleCommentPress}>
           <Ionicons name="chatbubble-outline" size={24} />
           <Text style={styles.comments}>{item.posts.comments}</Text>
@@ -78,17 +91,17 @@ const PostList = ({navigation, openBottomSheet}) => {
           <Ionicons name="paper-plane-outline" size={25} />
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginLeft: 'auto'}}
-          onPress={() => setIsBookmarked(!isBookmarked)}>
+          style={{ marginLeft: 'auto' }}
+          onPress={() => toggleBookmark(item.id)}>
           <Ionicons
-            name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+            name={item.bookmarked ? 'bookmark' : 'bookmark-outline'}
             size={24}
           />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity>
-        <Text style={{fontWeight: '500', marginLeft: 10}}>Beğenmeleri gör</Text>
+        <Text style={{ fontWeight: '500', marginLeft: 10 }}>Beğenmeleri gör</Text>
       </TouchableOpacity>
 
       <View
@@ -102,12 +115,6 @@ const PostList = ({navigation, openBottomSheet}) => {
       </View>
       <Text style={styles.postTime}>{item.posts.time}</Text>
 
-      {/* Yorumlar */}
-      {/*{item.comments.map((comment, index) => (
-        <Text key={index} style={styles.comment}>
-        <Text style={styles.username}>{comment.user}</Text> {comment.comment}
-        </Text>
-        ))}*/}
       <CommentBottomSheet ref={commentBottomSheetReference} />
       <ShareBottomSheet ref={shareBottomSheetReference} />
     </View>
@@ -118,7 +125,7 @@ const PostList = ({navigation, openBottomSheet}) => {
       data={posts}
       renderItem={renderItem}
       keyExtractor={item => item.id.toString()}
-      showsVerticalScrollIndicator={false} // Scroll göstergesini kap
+      showsVerticalScrollIndicator={false}
     />
   );
 };

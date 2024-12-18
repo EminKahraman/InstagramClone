@@ -1,8 +1,8 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View, Dimensions} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useSelector} from 'react-redux';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { useSelector } from 'react-redux';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import FollowerTab from './followTab/FollowerTab';
 import FollowTab from './followTab/FollowTab';
@@ -11,11 +11,13 @@ import MarkedTab from './followTab/MarkedTab';
 
 const Tab = createMaterialTopTabNavigator();
 
-const FollowDetail = ({navigation, route}) => {
-  const {user} = useSelector(state => state.auth);
+const FollowDetail = ({ navigation, route}) => {
+  const { user } = useSelector(state => state.auth);
+  const { isMe } = route.params || { isMe: false };
+  const { item } = route.params || { item: null };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white'}}>
       <View style={styles.header}>
         <Ionicons
           name="arrow-back"
@@ -28,14 +30,14 @@ const FollowDetail = ({navigation, route}) => {
             fontSize: 20,
             fontWeight: 'bold',
           }}>
-          {user.username}
+          {isMe ? user?.username : item?.username}
         </Text>
       </View>
 
-      <View style={{flex: 1, marginTop: 10}}>
+      <View style={{ flex: 1, marginTop: 10 }}>
         <Tab.Navigator
-          screenOptions={({route}) => ({
-            tabBarLabel: ({focused}) => {
+          screenOptions={({ route }) => ({
+            tabBarLabel: ({ focused }) => {
               let tabName;
               if (route.name === 'Follower') {
                 tabName = '0 Takipçi';
@@ -69,7 +71,7 @@ const FollowDetail = ({navigation, route}) => {
               width: 114,
             },
           })}
-          initialLayout={{width: Dimensions.get('window').width}}
+          initialLayout={{ width: Dimensions.get('window').width }}
           initialRouteName={route.params.tabToOpen}>
           <Tab.Screen name="Follower" component={FollowerTab} />
           <Tab.Screen name="Follow" component={FollowTab} />

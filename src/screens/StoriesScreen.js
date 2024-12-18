@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useSelector} from 'react-redux';
 
 const StoriesScreen = ({navigation, route}) => {
   const {item} = route.params || {item: null};

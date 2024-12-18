@@ -41,10 +41,10 @@ const LoginScreen = ({navigation}) => {
     if (userSnapshot.exists()) {
       const userData = userSnapshot.val();
       dispatch(setUser(userData));
-      const profileImageUrl = `https://picsum.photos/200?random=${Math.floor(
-        Math.random() * 1000,
-      )}`;
-      dispatch(setProfileImageUrl(profileImageUrl));
+      // const profileImageUrl = `https://picsum.photos/200?random=${Math.floor(
+      //   Math.random() * 1000,
+      // )}`;
+      // dispatch(setProfileImageUrl(profileImageUrl));
     } else {
       console.log('Kullanıcı verileri bulunamadı');
     }
@@ -86,10 +86,10 @@ const LoginScreen = ({navigation}) => {
         console.log('Kullanıcı verileri bulunamadı');
       }
 
-      const profileImageUrl = `https://picsum.photos/200?random=${Math.floor(
-        Math.random() * 1000,
-      )}`;
-      dispatch(setProfileImageUrl(profileImageUrl));
+      // const profileImageUrl = `https://picsum.photos/200?random=${Math.floor(
+      //   Math.random() * 1000,
+      // )}`;
+      // dispatch(setProfileImageUrl(profileImageUrl));
       navigation.navigate('Tab');
     } catch (error) {
       console.log('error', error);

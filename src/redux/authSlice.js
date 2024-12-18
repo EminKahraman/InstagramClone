@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   profileImageUrl: '',
@@ -8,8 +8,9 @@ const initialState = {
   city: '',
   gender: '',
   email: '',
-  selectedImages:[],
-  bio:'',
+  selectedImages: [],
+  bio: '',
+  accountPrivacy: true,
 
   user: null,
 };
@@ -48,8 +49,11 @@ const authSlice = createSlice({
     setBio: (state, action) => {
       state.bio = action.payload;
     },
-  },
-});
+    setAccountPrivacy: (state, action) => {
+      state.accountPrivacy = action.payload;
+    },
+  }
+})
 
 export const {
   setProfileImageUrl,
@@ -61,6 +65,7 @@ export const {
   setEmail,
   setSelectedImage,
   setBio,
+  setAccountPrivacy,
   setUser,
 } = authSlice.actions;
 export default authSlice.reducer;

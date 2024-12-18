@@ -15,6 +15,7 @@ import MessageRequestScreen from '../screens/MessageRequestScreen';
 import HiddenRequestScreen from '../screens/HiddenRequestScreen';
 import StoriesScreen from '../screens/StoriesScreen';
 import BioEditScreen from '../screens/BioEditScreen';
+import NewMessageScreen from '../screens/NewMessageScreen';
 
 const Stack = createStackNavigator();
 
@@ -46,7 +47,7 @@ const MainStack = () => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <TouchableOpacity
                 onPress={() => navigation.goBack()}
-                style={{marginLeft: 15}}>
+                style={{marginLeft: 10}}>
                 <Ionicons name="arrow-back-outline" size={24} />
               </TouchableOpacity>
               <TouchableOpacity style={{marginLeft: 30}}>
@@ -57,7 +58,7 @@ const MainStack = () => {
             </View>
           ),
           headerRight: () => (
-            <TouchableOpacity style={{marginRight: 15}}>
+            <TouchableOpacity onPress={() => navigation.navigate("NewMessage")} style={{marginRight: 10}}>
               <Ionicons name="create-outline" size={24} />
             </TouchableOpacity>
           ),
@@ -71,7 +72,7 @@ const MainStack = () => {
           headerLeft: () => (
             <View
               style={{
-                marginLeft: 15,
+                marginLeft: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
@@ -95,7 +96,7 @@ const MainStack = () => {
           headerLeft: () => (
             <View
               style={{
-                marginLeft: 15,
+                marginLeft: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
@@ -119,7 +120,7 @@ const MainStack = () => {
           headerLeft: () => (
             <View
               style={{
-                marginLeft: 15,
+                marginLeft: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
@@ -138,6 +139,30 @@ const MainStack = () => {
       />
       <Stack.Screen name="Stories" component={StoriesScreen} />
       <Stack.Screen name="BioEdit" component={BioEditScreen} />
+      <Stack.Screen
+        name="NewMessage"
+        component={NewMessageScreen}
+        options={({navigation}) => ({
+          headerLeft: () => (
+            <View
+              style={{
+                marginLeft: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back-outline" size={24} />
+              </TouchableOpacity>
+              <Text style={{marginLeft: 30, fontWeight: 'bold', fontSize: 18}}>
+                Yeni Mesaj
+              </Text>
+            </View>
+          ),
+          headerTitle: ' ',
+          headerShown: true,
+          headerBackTitle: ' ',
+        })}
+      />
     </Stack.Navigator>
   );
 };

@@ -14,6 +14,7 @@ import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import dummyData from './dummyData';
 import {useSelector} from 'react-redux';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stories = ({navigation}) => {
   const {user} = useSelector(state => state.auth);
@@ -21,15 +22,7 @@ const Stories = ({navigation}) => {
 
   const fetchData = async () => {
     try {
-      setStories([
-        {
-          id: 0,
-          username: 'Hikayen',
-          profileImage: user.avatar,
-          stories: {storieImage: 'https://picsum.photos/500/500'},
-        },
-        ...dummyData.users,
-      ]);
+      setStories([...dummyData.users]);
     } catch (error) {
       console.error('Veri çekme hatası:', error);
     }
@@ -52,12 +45,10 @@ const Stories = ({navigation}) => {
         <LinearGradient
           colors={['#833AB4', '#FD1D1D', '#F56040']} // Mor-turuncu geçiş
           style={styles.gradient}>
-          <View>
-            <Image
-              source={{uri: item.profileImage}}
-              style={styles.profileImage}
-            />
-          </View>
+          <Image
+            source={{uri: item.profileImage}}
+            style={styles.profileImage}
+          />
         </LinearGradient>
         <Text style={{fontSize: 12, marginTop: 5}}>{shortenedUsername}</Text>
       </Pressable>
@@ -71,6 +62,7 @@ const Stories = ({navigation}) => {
         borderBottomColor: '#E0E0E0',
       }}>
       <FlatList
+        ListHeaderComponent={myStories(user)}
         data={stories}
         renderItem={renderStories}
         horizontal
@@ -79,26 +71,69 @@ const Stories = ({navigation}) => {
     </View>
   );
 };
+
+const myStories = user => {
+  return (
+    <View style={{marginTop: 5, alignItems: 'center'}}>
+      <Image source={{uri: user.avatar}} style={styles.myStories} />
+      <View style={styles.addStoryButton}>
+        <Ionicons name="add" size={20} color={'white'} />
+      </View>
+      <Text style={{fontSize: 12, marginTop: 5}}>Hikayen</Text>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginLeft: 15,
-    marginTop: 5,
+    marginHorizontal: 5,
     marginBottom: 10,
   },
   profileImage: {
-    width: 76,
-    height: 76,
+    width: 75,
+    height: 75,
     borderRadius: 50,
     borderWidth: 4,
     borderColor: 'white',
   },
   gradient: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+  },
+
+  myStories: {
+    width: 75,
+    height: 75,
+    borderRadius: 50,
+    borderWidth: 4,
+    borderColor: 'white',
+    marginHorizontal: 10,
+  },
+
+  addStoryButton: {
+    position: 'absolute',
+    bottom: 22,
+    right: 12,
+    backgroundColor: '#4c7cec',
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth:2,
+    borderColor:'white'
+  },
+
+  iconProfileImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80.5,
-    height: 80.5,
-    borderRadius: 50,
   },
 
   // storyContainer: {
