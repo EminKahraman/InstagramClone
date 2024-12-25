@@ -14,9 +14,9 @@ import React, {forwardRef, useState} from 'react';
 import {BottomSheet} from '../BottomSheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
-import { setAccountPrivacy } from '../../redux/authSlice';
+import {setAccountPrivacy} from '../../redux/authSlice';
 
-const AccountPrivacy = forwardRef((props, ref) => {
+const AccountPrivacyBottomSheet = forwardRef((props, ref) => {
   const dispatch = useDispatch();
   const {accountPrivacy} = useSelector(state => state.auth);
   return (
@@ -80,10 +80,10 @@ const AccountPrivacy = forwardRef((props, ref) => {
           />
 
           <TouchableOpacity
-          onPress={() => {
-            dispatch(setAccountPrivacy(false));
-            ref.current?.dismiss();
-          }}
+            onPress={() => {
+              dispatch(setAccountPrivacy(false));
+              ref.current?.dismiss();
+            }}
             style={{
               backgroundColor: '#1c86ee',
               marginHorizontal: 15,
@@ -168,7 +168,7 @@ const AccountPrivacy = forwardRef((props, ref) => {
   );
 });
 
-export default AccountPrivacy;
+export default AccountPrivacyBottomSheet;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,90 +1,73 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   setMessages,
-  setParticipants,
   setEditedMessage,
   updateMessages,
-  setLoading
+  setLoading,
 } from '../redux/messagesSlice';
 import MessageList from './MessageScreens/MessageList';
 import InputBar from './MessageScreens/InputBar';
 import MessageDetailHeader from '../header/MessageDetailHeader';
 
-const MessageDetail = ({ navigation, route }) => {
-  const { item } = route.params || { item: null };
+const MessageDetail = ({navigation, route}) => {
+  const {item} = route.params || {item: null};
   const dispatch = useDispatch();
-  const { messages, participants, editedMessage, loading } = useSelector(state => state.message);
-
+  const {messages, participants, editedMessage, loading} = useSelector(
+    state => state.message,
+  );
 
   useEffect(() => {
-    const fetchMessagesAndParticipants = async () => {
-      setLoading(true)
-      try {
-        const messagesResponse = await axios.get(
-          'https://dummy-chat-server.tribechat.pro/api/messages/latest',
-        );
-        dispatch(setMessages(messagesResponse.data));
+    dispatch(setLoading(true));
+    axios
+      .get('https://dummyjson.com/comments?limit=10')
+      .then(response => {
+        dispatch(setMessages(response.data.comments));
+        dispatch(setLoading(false));
+      })
+      .catch(error => {
+        console.error(error);
+        dispatch(setLoading(false));
+      });
+  }, [dispatch]);
 
-        const participantsResponse = await axios.get(
-          'http://dummy-chat-server.tribechat.pro/api/participants/all',
-        );
-        dispatch(setParticipants(participantsResponse.data));
-      } catch (error) {
-        if (error.response) {
-          // Sunucudan dönen yanıt hatası
-          console.error('Response error:', error.response.data);
-        } else if (error.request) {
-          // Sunucuya istek gitti fakat cevap alınamadı
-          console.error('Request error:', error.request);
-        } else {
-          // İstek yapılmadan önce oluşan hata
-          console.error('Error:', error.message);
-        }
-      } finally {
-        setLoading(false); // Yükleme durumunu kaldırma
-      }
-    };
-
-    fetchMessagesAndParticipants();
-  }, []);
-
-
-
-
-  const sendMessage = async () => {
+  const sendMessage = () => {
     if (editedMessage.trim() === '') return;
 
-    try {
-      const response = await axios.post(
-        'http://dummy-chat-server.tribechat.pro/api/messages/new',
-        {
-          text: editedMessage,
-        },
-      );
-
-      dispatch(updateMessages(response.data))
-
-      dispatch(setEditedMessage(''));
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
+    axios
+      .post('https://dummyjson.com/comments/add', {
+        body: editedMessage, // API'nin beklediği doğru alan adı
+        postId: item.id, // item.id'yi doğru şekilde gönderdiğinizden emin olun
+        userId: 5, // Kullanıcı ID'sini doğru şekilde gönderdiğinizden emin olun
+      })
+      .then(response => {
+        const newMessage = {
+          ...response.data,
+          id: new Date().getTime().toString(), // Benzersiz bir id oluşturun
+        };
+        dispatch(updateMessages(newMessage));
+        dispatch(setEditedMessage(''));
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   return loading ? (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <ActivityIndicator size="large" />
     </View>
   ) : (
-    <SafeAreaView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <MessageDetailHeader navigation={navigation} item={item} />
       <MessageList />
       <InputBar
@@ -92,7 +75,7 @@ const MessageDetail = ({ navigation, route }) => {
         setEditedMessage={text => dispatch(setEditedMessage(text))}
         onSendMessage={sendMessage}
       />
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -16,6 +16,7 @@ import HiddenRequestScreen from '../screens/HiddenRequestScreen';
 import StoriesScreen from '../screens/StoriesScreen';
 import BioEditScreen from '../screens/BioEditScreen';
 import NewMessageScreen from '../screens/NewMessageScreen';
+import { tr } from '@faker-js/faker';
 
 const Stack = createStackNavigator();
 

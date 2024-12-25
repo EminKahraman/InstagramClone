@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,26 +8,30 @@ import {
   Alert,
   Pressable,
   FlatList,
+  Modal,
 } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useSelector } from 'react-redux';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import dummyData from '../dummyData';
 import ProfileHeader from '../../header/ProfileHeader';
+
 import PostsTab from './profileTab/PostsTab';
 import ReelsTab from './profileTab/ReelsTab';
 import TagsTab from './profileTab/TagsTab';
+
 import CreateBottomSheet from '../../components/BottomSheets/Create';
 import ProfileImageBottomSheet from '../../components/BottomSheets/ProfileImage';
 import ProfileDetailBottomSheet from '../../components/BottomSheets/ProfileDetail';
+import AccountsBottomSheet from '../../components/BottomSheets/Accounts';
 
 const Tab = createMaterialTopTabNavigator();
 
-const ProfileScreen = ({ navigation, route }) => {
-  const { user } = useSelector(state => state.auth);
-  const { isMe } = route.params || { isMe: false };
-  const { item } = route.params || { item: null };
+const ProfileScreen = ({navigation, route}) => {
+  const {user} = useSelector(state => state.auth);
+  const {isMe} = route.params || {isMe: false};
+  const {item} = route.params || {item: null};
   const [isFollowed, setIsFollowed] = useState(true);
   const [isDiscover, setIsDiscover] = useState(false);
 
@@ -49,7 +53,12 @@ const ProfileScreen = ({ navigation, route }) => {
     profileDetailBottomSheetReference.current?.present();
   };
 
-  const renderDiscoverCard = ({ item }) => {
+  const accountsBottomSheetReference = React.useRef(null);
+  const handleAccountsPress = () => {
+    accountsBottomSheetReference.current?.present();
+  };
+
+  const renderDiscoverCard = ({item}) => {
     return (
       <View
         style={{
@@ -62,17 +71,17 @@ const ProfileScreen = ({ navigation, route }) => {
         <Ionicons
           name="close-outline"
           size={24}
-          style={{ position: 'absolute', right: 0, top: 0 }}
+          style={{position: 'absolute', right: 0, top: 0}}
         />
-        <View style={{ alignItems: 'center' }}>
+        <View style={{alignItems: 'center'}}>
           <Image
-            source={{ uri: item?.profileImage }}
+            source={{uri: item?.profileImage}}
             style={styles.cardProfileImage}
           />
-          <Text style={{ fontWeight: '500', marginTop: 10 }}>
+          <Text style={{fontWeight: '500', marginTop: 10}}>
             {item?.fullName}
           </Text>
-          <Text style={{ fontSize: 11, marginTop: 5, color: '#696969' }}>
+          <Text style={{fontSize: 11, marginTop: 5, color: '#696969'}}>
             Senin için öneriliyor
           </Text>
         </View>
@@ -88,7 +97,7 @@ const ProfileScreen = ({ navigation, route }) => {
             padding: 5,
             borderRadius: 7,
           }}>
-          <Text style={{ color: 'white', alignItems: 'center' }}>Takip Et</Text>
+          <Text style={{color: 'white', alignItems: 'center'}}>Takip Et</Text>
         </TouchableOpacity>
       </View>
     );
@@ -100,19 +109,20 @@ const ProfileScreen = ({ navigation, route }) => {
         navigation={navigation}
         username={isMe ? user?.username : item?.username}
         isMe={isMe}
-        onLeftPress={isMe ? null : goBack}
+        onLeftOnePress={isMe ? null : goBack}
+        onLeftTwoPress={isMe ? handleAccountsPress : null}
+        onRightOnePress={isMe ? handleCreatePress : null}
         onRightTwoPress={isMe ? goSettings : handleProfileDetailPress}
-        onRightOnePress={handleCreatePress}
       />
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <View
-          style={{ flexDirection: 'row', marginTop: 20, alignItems: 'center' }}>
-          <View style={{ marginLeft: 20 }}>
+          style={{flexDirection: 'row', marginTop: 20, alignItems: 'center'}}>
+          <View style={{marginLeft: 20}}>
             {isMe && (
               <Pressable onPress={handleProfileImagePress}>
                 {user?.avatar ? (
                   <Image
-                    source={{ uri: user?.avatar }}
+                    source={{uri: user?.avatar}}
                     style={styles.profileImage}
                   />
                 ) : (
@@ -125,13 +135,13 @@ const ProfileScreen = ({ navigation, route }) => {
 
             {!isMe && (
               <Image
-                source={{ uri: item?.profileImage }}
+                source={{uri: item?.profileImage}}
                 style={styles.profileImage}
               />
             )}
           </View>
           <View style={styles.numbers}>
-            <View style={{ alignItems: 'center' }}>
+            <View style={{alignItems: 'center'}}>
               <Text style={styles.post}>
                 {isMe ? user?.posts?.length || 0 : item?.profile?.post || 0}
               </Text>
@@ -139,9 +149,13 @@ const ProfileScreen = ({ navigation, route }) => {
             </View>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('FollowDetail', { tabToOpen: 'Follower', isMe, item })
+                navigation.navigate('FollowDetail', {
+                  tabToOpen: 'Follower',
+                  isMe,
+                  item,
+                })
               }
-              style={{ alignItems: 'center', marginHorizontal: 40 }}>
+              style={{alignItems: 'center', marginHorizontal: 40}}>
               <Text style={styles.followers}>
                 {isMe ? 1 : item?.profile?.followers}
               </Text>
@@ -149,9 +163,13 @@ const ProfileScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('FollowDetail', { tabToOpen: 'Follow' })
+                navigation.navigate('FollowDetail', {
+                  tabToOpen: 'Follow',
+                  isMe,
+                  item,
+                })
               }
-              style={{ alignItems: 'center' }}>
+              style={{alignItems: 'center'}}>
               <Text style={styles.following}>
                 {isMe ? 1 : item?.profile?.following}
               </Text>
@@ -178,10 +196,10 @@ const ProfileScreen = ({ navigation, route }) => {
               <TouchableOpacity
                 style={styles.editButton}
                 onPress={() => navigation.navigate('ProfileEdit')}>
-                <Text style={{ fontWeight: '500' }}>Profili Düzenle</Text>
+                <Text style={{fontWeight: '500'}}>Profili Düzenle</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.shareButton}>
-                <Text style={{ fontWeight: '500' }}>Profili paylaş</Text>
+                <Text style={{fontWeight: '500'}}>Profili paylaş</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.discoverButton}
@@ -205,14 +223,14 @@ const ProfileScreen = ({ navigation, route }) => {
                 <Text
                   style={
                     isFollowed
-                      ? { color: 'white', fontWeight: '500' }
-                      : { color: 'black', fontWeight: '500' }
+                      ? {color: 'white', fontWeight: '500'}
+                      : {color: 'black', fontWeight: '500'}
                   }>
                   {isFollowed ? 'Takip Et' : 'Takip'}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.shareButton}>
-                <Text style={{ fontWeight: '500' }}>Mesaj</Text>
+                <Text style={{fontWeight: '500'}}>Mesaj</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.discoverButton}
@@ -236,11 +254,11 @@ const ProfileScreen = ({ navigation, route }) => {
                 marginBottom: 10,
                 marginHorizontal: 15,
               }}>
-              <Text style={{ fontWeight: '500', fontSize: 14 }}>
+              <Text style={{fontWeight: '500', fontSize: 14}}>
                 Yeni İnsanlar Keşfet
               </Text>
-              <TouchableOpacity style={{ marginLeft: 'auto' }}>
-                <Text style={{ color: '#094be5', fontWeight: '500' }}>
+              <TouchableOpacity style={{marginLeft: 'auto'}}>
+                <Text style={{color: '#094be5', fontWeight: '500'}}>
                   Tümünü Gör
                 </Text>
               </TouchableOpacity>
@@ -255,10 +273,10 @@ const ProfileScreen = ({ navigation, route }) => {
           </View>
         ) : null}
 
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ color }) => {
+            screenOptions={({route}) => ({
+              tabBarIcon: ({color}) => {
                 let iconName;
 
                 if (route.name === 'Posts') {
@@ -279,18 +297,18 @@ const ProfileScreen = ({ navigation, route }) => {
             <Tab.Screen
               name="Posts"
               component={PostsTab}
-              initialParams={{ isMe: isMe }}
+              initialParams={{isMe: isMe}}
             />
             <Tab.Screen
               name="Reels"
               component={ReelsTab}
-              initialParams={{ isMe: isMe }}
+              initialParams={{isMe: isMe}}
             />
 
             <Tab.Screen
               name="Tags"
               component={TagsTab}
-              initialParams={{ isMe: isMe }}
+              initialParams={{isMe: isMe}}
             />
           </Tab.Navigator>
         </View>
@@ -299,15 +317,16 @@ const ProfileScreen = ({ navigation, route }) => {
       <CreateBottomSheet ref={createBottomSheetReference} />
       <ProfileImageBottomSheet ref={profileImageBottomSheetReference} />
       <ProfileDetailBottomSheet ref={profileDetailBottomSheetReference} />
+      <AccountsBottomSheet ref={accountsBottomSheetReference} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'column', backgroundColor: 'white' },
-  apps: { flex: 1, alignItems: 'center' },
-  film: { flex: 1, alignItems: 'center' },
-  people: { flex: 1, alignItems: 'center', paddingBottom: 10 },
+  container: {flex: 1, flexDirection: 'column', backgroundColor: 'white'},
+  apps: {flex: 1, alignItems: 'center'},
+  film: {flex: 1, alignItems: 'center'},
+  people: {flex: 1, alignItems: 'center', paddingBottom: 10},
   numbers: {
     flex: 1,
     justifyContent: 'center',
@@ -381,14 +400,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 
-  post: { fontSize: 20, fontWeight: 'bold' },
-  postTitle: { fontSize: 15 },
+  post: {fontSize: 20, fontWeight: 'bold'},
+  postTitle: {fontSize: 15},
 
-  followers: { fontSize: 20, fontWeight: 'bold' },
-  followersTitle: { fontSize: 15 },
+  followers: {fontSize: 20, fontWeight: 'bold'},
+  followersTitle: {fontSize: 15},
 
-  following: { fontSize: 20, fontWeight: 'bold' },
-  followingTtile: { fontSize: 15 },
+  following: {fontSize: 20, fontWeight: 'bold'},
+  followingTtile: {fontSize: 15},
 
   contentContainer: {
     flex: 1,

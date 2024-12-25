@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {FlatList, Text, StyleSheet, View} from 'react-native';
 import dayjs from 'dayjs';
-import {useSelector} from 'react-redux'; 
+import {useSelector} from 'react-redux';
 import MessageItem from './MessageItem';
 
 const MessageList = () => {
@@ -19,12 +19,12 @@ const MessageList = () => {
 
   const renderMessage = ({item}) => {
     const messageDate = dayjs(item.sentAt).format('DD-MM-YYYY');
-    const showDateSeparator = lastMessageDate !== messageDate; 
+    const showDateSeparator = lastMessageDate !== messageDate;
 
     lastMessageDate = messageDate;
 
     return (
-      <View >
+      <View>
         {showDateSeparator && (
           <Text style={styles.dateSeparator}>{messageDate}</Text>
         )}
@@ -36,11 +36,9 @@ const MessageList = () => {
   return (
     <FlatList
       ref={yourRef}
-      initialNumToRender={5}
       data={messages}
-      keyExtractor={item => item.uuid}
+      keyExtractor={item => item.id.toString()} // Benzersiz bir key değeri döndürdüğünden emin olun
       renderItem={renderMessage}
-      style={{flex:1}}
     />
   );
 };
@@ -49,10 +47,8 @@ export default MessageList;
 
 const styles = StyleSheet.create({
   dateSeparator: {
-    flex: 1,
     marginBottom: 5,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'black',
   },
 });

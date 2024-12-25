@@ -76,8 +76,8 @@ const myStories = user => {
   return (
     <View style={{marginTop: 5, alignItems: 'center'}}>
       <Image source={{uri: user.avatar}} style={styles.myStories} />
-      <View style={styles.addStoryButton}>
-        <Ionicons name="add" size={20} color={'white'} />
+      <View style={styles.addStoryIcon}>
+        <Ionicons name="add" size={18} color={'white'} />
       </View>
       <Text style={{fontSize: 12, marginTop: 5}}>Hikayen</Text>
     </View>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 
-  addStoryButton: {
+  addStoryIcon: {
     position: 'absolute',
     bottom: 22,
     right: 12,

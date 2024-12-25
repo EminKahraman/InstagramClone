@@ -1,37 +1,45 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import dayjs from 'dayjs';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {deleteMessage} from '../../redux/messagesSlice';
 
+const MessageItem = ({message}) => {
+  const dispatch = useDispatch();
+  const {user} = useSelector(state => state.auth);
+  const isSelf = message.userId === user.id; // Kullanıcı ID'sini kontrol edin
 
-const MessageItem = ({message, participants}) => {
-  const author = participants.find(p => p.uuid === message.authorUuid);
-  const isSelf = message.authorUuid === 'you';
-
-  console.log("author",author)
+  const handleLongPress = () => {
+    Alert.alert(
+      'Mesajı Sil',
+      'Bu mesajı silmek istediğinizden emin misiniz?',
+      [
+        {
+          text: 'İptal',
+          style: 'cancel',
+        },
+        {
+          text: 'Sil',
+          onPress: () => dispatch(deleteMessage({ userId: user.id, messageId: message.id })),
+          style: 'destructive',
+        },
+      ],
+      {cancelable: true},
+    );
+  };
 
   return (
-    <View
-      style={[
-        styles.messageContainer,
-        {
-          alignSelf: isSelf ? 'flex-end' : 'flex-start',
-          backgroundColor: isSelf ? '#1b8bb4' : 'gray',
-        },
-      ]}>
-      {author && (
-        <TouchableOpacity
-          style={styles.header}>
-          <Image source={{uri: author.avatarUrl || ''}} style={styles.avatar} />
-          <View style={styles.headerText}>
-            <Text style={styles.senderName}>{author.name}</Text>
-            <Text style={styles.timestamp}>
-              {dayjs(message.sentAt).format('HH:mm')}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      )}
-      <Text style={styles.messageText}>{message.text}</Text>
-    </View>
+    <TouchableOpacity onLongPress={handleLongPress}>
+      <View
+        style={[
+          styles.messageContainer,
+          {
+            alignSelf: isSelf ? 'flex-end' : 'flex-start',
+            backgroundColor: isSelf ? '#1b8bb4' : 'gray',
+          },
+        ]}>
+        <Text style={styles.messageText}>{message.body}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -39,12 +47,10 @@ const styles = StyleSheet.create({
   messageContainer: {
     marginBottom: 5,
     padding: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 15,
     borderRadius: 20,
     flexShrink: 1,
-    flexGrow: 0,
     maxWidth: '80%',
-    minWidth: '45%',
   },
   messageText: {
     fontSize: 14,

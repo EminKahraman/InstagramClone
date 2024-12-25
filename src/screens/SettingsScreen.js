@@ -9,13 +9,14 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
-import { setUser } from '../redux/authSlice';
+import {setUser} from '../redux/authSlice';
+import AccountsCenterBottomSheet from '../components/BottomSheets/AccountsCenter';
 
-const SettingsScreen = ({ navigation }) => {
-  const { accountPrivacy } = useSelector(state => state.auth);
+const SettingsScreen = ({navigation}) => {
+  const {accountPrivacy} = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
@@ -34,11 +35,17 @@ const SettingsScreen = ({ navigation }) => {
     ]);
   };
 
+  const accountsCenterBottomSheetReference = React.useRef(null);
+  const handleAccountsCenterPress = () => {
+    accountsCenterBottomSheetReference.current?.present();
+  };
+
   return (
     <SafeAreaView>
+      <AccountsCenterBottomSheet ref={accountsCenterBottomSheetReference} />
       <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
             <View style={styles.searchInput}>
               <Ionicons
                 name="search"
@@ -54,12 +61,12 @@ const SettingsScreen = ({ navigation }) => {
                 flexDirection: 'row',
                 marginTop: 20,
               }}>
-              <Text style={{ color: '#4f4f4f', fontWeight: '600' }}>Hesabın</Text>
-              <Text style={{ marginLeft: 'auto', fontSize: 16 }}>Meta</Text>
+              <Text style={{color: '#4f4f4f', fontWeight: '600'}}>Hesabın</Text>
+              <Text style={{marginLeft: 'auto', fontSize: 16}}>Meta</Text>
             </View>
 
             <TouchableOpacity
-              onPress={() => navigation.navigate('ProfileDetail')}
+              onPress={handleAccountsCenterPress}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -68,13 +75,13 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="person-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
               <View>
-                <Text style={{ fontSize: 16, marginBottom: 2 }}>
+                <Text style={{fontSize: 16, marginBottom: 2}}>
                   Hesaplar Merkezi
                 </Text>
-                <Text style={{ color: '#4f4f4f', fontSize: 13 }}>
+                <Text style={{color: '#4f4f4f', fontSize: 13}}>
                   Şifre, güvenlik, kişisel detaylar, reklam tercihleri
                 </Text>
               </View>
@@ -82,15 +89,16 @@ const SettingsScreen = ({ navigation }) => {
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
-            <View style={{ marginBottom: 15 }}>
-              <Text style={{ fontSize: 12, color: '#5f5f5f' }}>
+            <View style={{marginBottom: 15}}>
+              <Text style={{fontSize: 12, color: '#5f5f5f'}}>
                 Meta teknolojileri arasıbndaki bağlantılı deneyimlerini ve hesap
-                ayarlarını yönet.{" "}
-                <Text style={{ fontSize: 12, color: '#1c0f45', fontWeight: "500" }}>
+                ayarlarını yönet.{' '}
+                <Text
+                  style={{fontSize: 12, color: '#1c0f45', fontWeight: '500'}}>
                   Daha fazla bilgi al
                 </Text>
               </Text>
@@ -98,9 +106,9 @@ const SettingsScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Instagram'ı nasıl kullanıyorsun?
             </Text>
 
@@ -113,14 +121,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="bookmark-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Kaydedildi</Text>
+              <Text style={{fontSize: 16}}>Kaydedildi</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -133,14 +141,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="archive-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Arşiv</Text>
+              <Text style={{fontSize: 16}}>Arşiv</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -153,14 +161,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="timer-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Hareketlerin</Text>
+              <Text style={{fontSize: 16}}>Hareketlerin</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -173,14 +181,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="notifications-outline"
                 size={25}
-                style={{ marginRight: 15 }}
+                style={{marginRight: 15}}
               />
-              <Text style={{ fontSize: 16 }}>Bildirimler</Text>
+              <Text style={{fontSize: 16}}>Bildirimler</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -194,22 +202,22 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="time-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Zaman yönetimi</Text>
+              <Text style={{fontSize: 16}}>Zaman yönetimi</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               İçeriklerini kimler görebilir?
             </Text>
 
@@ -223,10 +231,10 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="lock-closed-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Hesap gizliliği</Text>
-              <Text style={{ marginLeft: 'auto', color: 'gray', marginRight: 5 }}>
+              <Text style={{fontSize: 16}}>Hesap gizliliği</Text>
+              <Text style={{marginLeft: 'auto', color: 'gray', marginRight: 5}}>
                 {accountPrivacy ? 'Gizli' : 'Herkese Açık'}
               </Text>
               <Ionicons
@@ -242,9 +250,9 @@ const SettingsScreen = ({ navigation }) => {
                 alignItems: 'center',
                 marginTop: 15,
               }}>
-              <Ionicons name="star" size={25} style={{ marginRight: 10 }} />
-              <Text style={{ fontSize: 16 }}>Yakın Arkadaşlar</Text>
-              <Text style={{ marginLeft: 'auto', color: 'gray', marginRight: 5 }}>
+              <Ionicons name="star" size={25} style={{marginRight: 10}} />
+              <Text style={{fontSize: 16}}>Yakın Arkadaşlar</Text>
+              <Text style={{marginLeft: 'auto', color: 'gray', marginRight: 5}}>
                 0
               </Text>
               <Ionicons
@@ -263,15 +271,15 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="grid-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Çapraz paylaşım</Text>
+              <Text style={{fontSize: 16}}>Çapraz paylaşım</Text>
 
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -284,10 +292,10 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="ban-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Engellenenler</Text>
-              <Text style={{ marginLeft: 'auto', color: 'gray', marginRight: 5 }}>
+              <Text style={{fontSize: 16}}>Engellenenler</Text>
+              <Text style={{marginLeft: 'auto', color: 'gray', marginRight: 5}}>
                 0
               </Text>
               <Ionicons
@@ -307,24 +315,24 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="eye-off-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>
+              <Text style={{fontSize: 16}}>
                 Hikayeyi ve canlı videoları gizle
               </Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Başkalarının seninle etkileşimleri
             </Text>
 
@@ -337,14 +345,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="chatbubble-ellipses-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Mesajlar ve hikaye yanıtlar</Text>
+              <Text style={{fontSize: 16}}>Mesajlar ve hikaye yanıtlar</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -357,14 +365,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="attach-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Etiket ve bahsetmeler</Text>
+              <Text style={{fontSize: 16}}>Etiket ve bahsetmeler</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -377,14 +385,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="chatbubble-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Yorumlar</Text>
+              <Text style={{fontSize: 16}}>Yorumlar</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -397,14 +405,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="repeat-outline"
                 size={25}
-                style={{ marginRight: 15 }}
+                style={{marginRight: 15}}
               />
-              <Text style={{ fontSize: 16 }}>Paylaşım</Text>
+              <Text style={{fontSize: 16}}>Paylaşım</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -417,10 +425,10 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="code-slash-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Kısıtlılar</Text>
-              <Text style={{ marginLeft: 'auto', marginRight: 5, color: 'gray' }}>
+              <Text style={{fontSize: 16}}>Kısıtlılar</Text>
+              <Text style={{marginLeft: 'auto', marginRight: 5, color: 'gray'}}>
                 0
               </Text>
               <Ionicons
@@ -439,14 +447,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="alert-circle-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Etkileşimi sınırla</Text>
+              <Text style={{fontSize: 16}}>Etkileşimi sınırla</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -459,14 +467,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="text-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Gizlenen Sözcükler</Text>
+              <Text style={{fontSize: 16}}>Gizlenen Sözcükler</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -480,24 +488,24 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="person-add-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>
+              <Text style={{fontSize: 16}}>
                 Arkadaşları takip et ve davet et
               </Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Neler görüyorsun?
             </Text>
 
@@ -510,10 +518,10 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="star-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Favoriler</Text>
-              <Text style={{ marginLeft: 'auto', color: 'gray', marginRight: 5 }}>
+              <Text style={{fontSize: 16}}>Favoriler</Text>
+              <Text style={{marginLeft: 'auto', color: 'gray', marginRight: 5}}>
                 0
               </Text>
               <Ionicons
@@ -532,10 +540,10 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="notifications-off-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Sessize alınanlar</Text>
-              <Text style={{ marginLeft: 'auto', color: 'gray', marginRight: 5 }}>
+              <Text style={{fontSize: 16}}>Sessize alınanlar</Text>
+              <Text style={{marginLeft: 'auto', color: 'gray', marginRight: 5}}>
                 0
               </Text>
               <Ionicons
@@ -554,15 +562,15 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="partly-sunny-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Önerilen içerikler</Text>
+              <Text style={{fontSize: 16}}>Önerilen içerikler</Text>
 
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -576,22 +584,22 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="heart-dislike-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Beğenme ve paylaşım sayıları</Text>
+              <Text style={{fontSize: 16}}>Beğenme ve paylaşım sayıları</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Neler görüyorsun?
             </Text>
 
@@ -604,15 +612,15 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="download-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Arşivleme ve indirme</Text>
+              <Text style={{fontSize: 16}}>Arşivleme ve indirme</Text>
 
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -625,15 +633,15 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="accessibility-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Erişilebilirlik ve çeviriler</Text>
+              <Text style={{fontSize: 16}}>Erişilebilirlik ve çeviriler</Text>
 
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -646,15 +654,15 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="language-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Dil</Text>
+              <Text style={{fontSize: 16}}>Dil</Text>
 
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -667,9 +675,9 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="cellular-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>
+              <Text style={{fontSize: 16}}>
                 Veri kullanımı ve medya kalitesi
               </Text>
 
@@ -677,7 +685,7 @@ const SettingsScreen = ({ navigation }) => {
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -688,23 +696,23 @@ const SettingsScreen = ({ navigation }) => {
                 marginTop: 15,
                 marginBottom: 10,
               }}>
-              <Ionicons name="tv-outline" size={25} style={{ marginRight: 10 }} />
-              <Text style={{ fontSize: 16 }}>
+              <Ionicons name="tv-outline" size={25} style={{marginRight: 10}} />
+              <Text style={{fontSize: 16}}>
                 Uygulama internet sitesi izinleri
               </Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Aileler için
             </Text>
 
@@ -718,22 +726,22 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="home-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Aile Merkezi</Text>
+              <Text style={{fontSize: 16}}>Aile Merkezi</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Profesyoneller için
             </Text>
 
@@ -746,14 +754,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="stats-chart-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Hesap türü ve araçlar</Text>
+              <Text style={{fontSize: 16}}>Hesap türü ve araçlar</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -767,10 +775,10 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="checkbox-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Meta Verified</Text>
-              <Text style={{ marginLeft: 'auto', marginRight: 5, color: 'gray' }}>
+              <Text style={{fontSize: 16}}>Meta Verified</Text>
+              <Text style={{marginLeft: 'auto', marginRight: 5, color: 'gray'}}>
                 Abone değilsin
               </Text>
 
@@ -783,9 +791,9 @@ const SettingsScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Siparişlerin ve bağış kampanyaların
             </Text>
 
@@ -799,22 +807,22 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="file-tray-full-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Siparişler ve ödemeler</Text>
+              <Text style={{fontSize: 16}}>Siparişler ve ödemeler</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Daha fazla bilgi ve destek
             </Text>
 
@@ -827,14 +835,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="help-buoy-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Yardım</Text>
+              <Text style={{fontSize: 16}}>Yardım</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -847,14 +855,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="shield-checkmark-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Gizlilik Merkezi</Text>
+              <Text style={{fontSize: 16}}>Gizlilik Merkezi</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -867,14 +875,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="person-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Hesap Durumu</Text>
+              <Text style={{fontSize: 16}}>Hesap Durumu</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -888,22 +896,22 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="information-circle-outline"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Hakkında</Text>
+              <Text style={{fontSize: 16}}>Hakkında</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{ backgroundColor: 'white', marginBottom: 6 }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+        <View style={{backgroundColor: 'white', marginBottom: 6}}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Meta'nın diğer ürünleri
             </Text>
 
@@ -916,14 +924,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="logo-whatsapp"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>WhatsApp</Text>
+              <Text style={{fontSize: 16}}>WhatsApp</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -936,14 +944,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="logo-instagram"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Threads</Text>
+              <Text style={{fontSize: 16}}>Threads</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
 
@@ -957,14 +965,14 @@ const SettingsScreen = ({ navigation }) => {
               <Ionicons
                 name="logo-facebook"
                 size={25}
-                style={{ marginRight: 10 }}
+                style={{marginRight: 10}}
               />
-              <Text style={{ fontSize: 16 }}>Facebook</Text>
+              <Text style={{fontSize: 16}}>Facebook</Text>
               <Ionicons
                 name="chevron-forward-outline"
                 size={20}
                 color={'gray'}
-                style={{ marginLeft: 'auto' }}
+                style={{marginLeft: 'auto'}}
               />
             </TouchableOpacity>
           </View>
@@ -974,8 +982,8 @@ const SettingsScreen = ({ navigation }) => {
           style={{
             backgroundColor: 'white',
           }}>
-          <View style={{ marginHorizontal: 15 }}>
-            <Text style={{ color: '#4f4f4f', fontWeight: '500', marginTop: 10 }}>
+          <View style={{marginHorizontal: 15}}>
+            <Text style={{color: '#4f4f4f', fontWeight: '500', marginTop: 10}}>
               Giriş yap
             </Text>
 
@@ -985,7 +993,7 @@ const SettingsScreen = ({ navigation }) => {
                 alignItems: 'center',
                 marginTop: 20,
               }}>
-              <Text style={{ fontSize: 16, color: '#1c86ee' }}>Hesap ekle</Text>
+              <Text style={{fontSize: 16, color: '#1c86ee'}}>Hesap ekle</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -996,7 +1004,7 @@ const SettingsScreen = ({ navigation }) => {
                 marginBottom: 15,
               }}
               onPress={handleLogout}>
-              <Text style={{ fontSize: 16, color: 'red' }}>Çıkış yap</Text>
+              <Text style={{fontSize: 16, color: 'red'}}>Çıkış yap</Text>
             </TouchableOpacity>
           </View>
         </View>
